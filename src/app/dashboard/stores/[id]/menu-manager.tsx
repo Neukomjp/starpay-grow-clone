@@ -12,6 +12,7 @@ import { Service } from '@/types/staff'
 import { menuService } from '@/lib/services/menu'
 import { toast } from 'sonner'
 import { ServiceOptionsDialog } from './service-options-dialog'
+import { ImageUpload } from '@/components/image-upload'
 
 interface MenuManagerProps {
     storeId: string
@@ -153,15 +154,15 @@ export function MenuManager({ storeId }: MenuManagerProps) {
                                         className="col-span-3"
                                     />
                                 </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="imageUrl" className="text-right">画像URL</Label>
-                                    <Input
-                                        id="imageUrl"
-                                        value={newItem.imageUrl}
-                                        onChange={(e) => setNewItem({ ...newItem, imageUrl: e.target.value })}
-                                        className="col-span-3"
-                                        placeholder="https://..."
-                                    />
+                                <div className="grid grid-cols-4 items-start gap-4">
+                                    <Label className="text-right pt-2">画像</Label>
+                                    <div className="col-span-3">
+                                        <ImageUpload
+                                            value={newItem.imageUrl}
+                                            onChange={(url) => setNewItem({ ...newItem, imageUrl: url })}
+                                            onRemove={() => setNewItem({ ...newItem, imageUrl: '' })}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="category" className="text-right">カテゴリ</Label>

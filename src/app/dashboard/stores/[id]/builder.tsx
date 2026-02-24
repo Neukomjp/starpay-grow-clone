@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 import { StoreData } from '@/lib/types/store'
 import { updateStoreAction } from '@/lib/actions/store'
 import { Loader2 } from 'lucide-react'
+import { ImageUpload } from '@/components/image-upload'
 
 interface StorePageBuilderProps {
     store: StoreData
@@ -156,13 +157,12 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
                 </div>
 
                 <div className="grid gap-2">
-                    <Label>カバー画像URL</Label>
-                    <Input
+                    <Label>カバー画像</Label>
+                    <ImageUpload
                         value={designConfig.heroImage}
-                        onChange={(e) => setDesignConfig({ ...designConfig, heroImage: e.target.value })}
-                        placeholder="https://..."
+                        onChange={(url) => setDesignConfig({ ...designConfig, heroImage: url })}
                     />
-                    <p className="text-xs text-muted-foreground">バナー画像の直接リンクを入力してください。</p>
+                    <p className="text-xs text-muted-foreground">店舗ページ最上部に表示される大きなバナー画像です。</p>
                 </div>
 
                 <div className="space-y-4 border-t pt-4">
@@ -185,26 +185,43 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
                         />
                     </div>
                     <div className="grid gap-2">
-                        <Label>画像URL (任意)</Label>
-                        <Input
+                        <Label>紹介画像 (任意)</Label>
+                        <ImageUpload
                             value={designConfig.about.imageUrl}
-                            onChange={(e) => setDesignConfig({ ...designConfig, about: { ...designConfig.about, imageUrl: e.target.value } })}
-                            placeholder="https://..."
+                            onChange={(url) => setDesignConfig({ ...designConfig, about: { ...designConfig.about, imageUrl: url } })}
+                            onRemove={() => setDesignConfig({ ...designConfig, about: { ...designConfig.about, imageUrl: '' } })}
                         />
                     </div>
                 </div>
 
                 <div className="space-y-4 border-t pt-4">
                     <h3 className="font-semibold">ギャラリー画像</h3>
-                    <div className="grid gap-2">
-                        <Label>画像URL (カンマ区切りで複数入力)</Label>
-                        <Textarea
-                            value={designConfig.gallery.join(',\n')}
-                            onChange={(e) => setDesignConfig({ ...designConfig, gallery: e.target.value.split(/[,\n]+/).map(s => s.trim()).filter(Boolean) })}
-                            placeholder="https://example.com/image1.jpg,&#13;&#10;https://example.com/image2.jpg"
-                            rows={4}
-                        />
-                        <p className="text-xs text-muted-foreground">複数の画像URLをカンマまたは改行で区切って入力してください。</p>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        {designConfig.gallery.map((img: string, index: number) => (
+                            <div key={img + index} className="grid gap-2">
+                                <Label>画像 {index + 1}</Label>
+                                <ImageUpload
+                                    value={img}
+                                    onChange={(url) => {
+                                        const newGallery = [...designConfig.gallery]
+                                        newGallery[index] = url
+                                        setDesignConfig({ ...designConfig, gallery: newGallery })
+                                    }}
+                                    onRemove={() => {
+                                        const newGallery = designConfig.gallery.filter((_: string, i: number) => i !== index)
+                                        setDesignConfig({ ...designConfig, gallery: newGallery })
+                                    }}
+                                />
+                            </div>
+                        ))}
+                        <div className="grid gap-2">
+                            <Label>新しい画像を追加</Label>
+                            <ImageUpload
+                                onChange={(url) => {
+                                    setDesignConfig({ ...designConfig, gallery: [...designConfig.gallery, url] })
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -231,12 +248,12 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
                     </div>
                     <div className="grid gap-2">
                         <Label>シェア用画像 (OGP Image)</Label>
-                        <Input
+                        <ImageUpload
                             value={designConfig.seo?.ogImage || ''}
-                            onChange={(e) => setDesignConfig({ ...designConfig, seo: { ...designConfig.seo, ogImage: e.target.value } })}
-                            placeholder="https://..."
+                            onChange={(url) => setDesignConfig({ ...designConfig, seo: { ...designConfig.seo, ogImage: url } })}
+                            onRemove={() => setDesignConfig({ ...designConfig, seo: { ...designConfig.seo, ogImage: '' } })}
                         />
-                        <p className="text-xs text-muted-foreground">SNSでシェアされた際に表示される画像URL。未入力の場合はカバー画像が使用されます。</p>
+                        <p className="text-xs text-muted-foreground">SNSでシェアされた際に表示される画像。未設定の場合はカバー画像が使用されます。</p>
                     </div>
                 </div>
 
