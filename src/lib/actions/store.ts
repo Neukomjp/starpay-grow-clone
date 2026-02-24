@@ -25,10 +25,15 @@ export async function createStoreAction(name: string, slug: string) {
 
 export async function updateStoreAction(id: string, updates: Partial<StoreData>) {
     const supabase = await createClient()
-    const result = await storeService.updateStore(id, updates, supabase)
-    revalidatePath(`/dashboard/stores/${id}`)
-    revalidatePath(`/store/${result.slug}`)
-    return result
+    try {
+        const result = await storeService.updateStore(id, updates, supabase)
+        revalidatePath(`/dashboard/stores/${id}`)
+        revalidatePath(`/store/${result.slug}`)
+        return result
+    } catch (err: any) {
+        console.error("updateStoreAction error:", err.message || err)
+        throw err
+    }
 }
 
 export async function getStoreByIdAction(id: string) {
