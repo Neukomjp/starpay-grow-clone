@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -13,6 +14,7 @@ import { ShiftManager } from './shift-manager'
 import { EmailSettings } from './email-settings'
 import { TicketManager } from './ticket-manager'
 import { StoreData } from '@/lib/types/store'
+import { ExternalLink } from 'lucide-react'
 
 interface StoreEditorTabsProps {
     store: StoreData
@@ -22,14 +24,13 @@ interface StoreEditorTabsProps {
 export function StoreEditorTabs({ store, initialTab = 'basic' }: StoreEditorTabsProps) {
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h2 className="text-3xl font-bold tracking-tight">{store.name}</h2>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline">
-                        プレビュー
-                    </Button>
-                    <Button>
-                        変更を保存
+                    <Button variant="outline" asChild>
+                        <Link href={`/store/${store.slug}`} target="_blank" rel="noopener noreferrer">
+                            プレビューを開く <ExternalLink className="ml-2 h-4 w-4" />
+                        </Link>
                     </Button>
                 </div>
             </div>
