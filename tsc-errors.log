@@ -1,0 +1,1 @@
+src/app/dashboard/customers/[id]/customer-details.tsx(18,15): error TS2304: Cannot find name 'Customer'.
