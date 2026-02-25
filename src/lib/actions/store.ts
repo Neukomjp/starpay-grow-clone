@@ -9,8 +9,15 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function getStoresAction() {
     const supabase = await createClient()
-    // Attempt to get org from cookie, but in demo mode we fall back to the seed org ID
-    const orgId = (await cookies()).get('organization-id')?.value || '11111111-1111-1111-1111-111111111111'
+    let orgId = (await cookies()).get('organization-id')?.value
+    if (!orgId) {
+        const { getUserOrganizationsAction } = await import('@/lib/actions/organization')
+        const orgs = await getUserOrganizationsAction()
+        orgId = orgs[0]?.id
+    }
+    // If orgId is undefined, getStores will return empty or throw if not handled, but stores.ts handles it or we pass it
+    // Wait, getStores defaults to demo org if orgId is undefined. So we must pass orgId.
+    if (!orgId) return []
     return await storeService.getStores(orgId, supabase)
 }
 

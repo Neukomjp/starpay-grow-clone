@@ -26,12 +26,16 @@ export default function NewCustomerPage() {
     })
 
     useEffect(() => {
-        // Fetch current store (simplified for demo)
         const loadStore = async () => {
-            // In client component we can't call server service directly if it uses fs?
-            // Actually storeService uses fs only for mocks. getStoresAction would be better.
-            // For now assume we can get it via standard action or just hardcode for demo
-            setStoreId('22222222-2222-2222-2222-222222222221')
+            try {
+                const { getStoresAction } = await import('@/lib/actions/store')
+                const stores = await getStoresAction()
+                if (stores && stores.length > 0) {
+                    setStoreId(stores[0].id)
+                }
+            } catch (err) {
+                console.error(err)
+            }
         }
         loadStore()
     }, [])
@@ -43,7 +47,7 @@ export default function NewCustomerPage() {
         setLoading(true)
         try {
             await createCustomerAction({
-                store_id: storeId || '22222222-2222-2222-2222-222222222221',
+                store_id: storeId,
                 name: formData.name,
                 email: formData.email,
                 phone: formData.phone,

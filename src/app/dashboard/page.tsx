@@ -12,14 +12,27 @@ import { Badge } from '@/components/ui/badge'
 
 export const dynamic = 'force-dynamic'
 
+import { cookies } from 'next/headers'
+
 export default async function DashboardPage() {
     // Fetch data
     let stores: any[] = []
-    try {
-        stores = await storeService.getStores()
-    } catch (e) {
-        // Using console.log instead of console.error because Turbopack crashes when trying to serialize fetch errors to the dev overlay from Server Components
-        console.log('Failed to fetch stores on dashboard, likely due to missing Supabase setup.')
+
+    const cookieStore = await cookies()
+    let orgId = cookieStore.get('organization-id')?.value
+    if (!orgId) {
+        const { getUserOrganizationsAction } = await import('@/lib/actions/organization')
+        const orgs = await getUserOrganizationsAction()
+        orgId = orgs[0]?.id
+    }
+
+    if (orgId) {
+        try {
+            stores = await storeService.getStores(orgId)
+        } catch (e) {
+            // Using console.log instead of console.error because Turbopack crashes when trying to serialize fetch errors to the dev overlay from Server Components
+            console.log('Failed to fetch stores on dashboard, likely due to missing Supabase setup.')
+        }
     }
 
     let salesSummary = {

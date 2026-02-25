@@ -1,9 +1,9 @@
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/server'
 import { Customer } from '@/lib/types/customer'
 
 export const customerService = {
     async getCustomers(storeId: string, query?: string) {
-        const supabase = createClient()
+        const supabase = await createClient()
 
         let dbQuery = supabase
             .from('customers')
@@ -22,7 +22,7 @@ export const customerService = {
     },
 
     async getCustomerById(id: string) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data, error } = await supabase
             .from('customers')
             .select('*')
@@ -34,7 +34,7 @@ export const customerService = {
     },
 
     async createCustomer(customer: Omit<Customer, 'id' | 'created_at' | 'updated_at' | 'total_visits' | 'total_spent'>) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data, error } = await supabase
             .from('customers')
             .insert([customer])
@@ -46,7 +46,7 @@ export const customerService = {
     },
 
     async updateCustomer(id: string, updates: Partial<Customer>) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data, error } = await supabase
             .from('customers')
             .update(updates)
@@ -59,7 +59,7 @@ export const customerService = {
     },
 
     async getCustomerByEmail(email: string) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data, error } = await supabase
             .from('customers')
             .select('*')

@@ -27,8 +27,18 @@ export default function NewCouponPage() {
     })
 
     useEffect(() => {
-        // Assume mock store for demo
-        setStoreId('22222222-2222-2222-2222-222222222221')
+        const loadStore = async () => {
+            try {
+                const { getStoresAction } = await import('@/lib/actions/store')
+                const stores = await getStoresAction()
+                if (stores && stores.length > 0) {
+                    setStoreId(stores[0].id)
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        loadStore()
 
         // Default expiry 1 month later
         const nextMonth = new Date()
@@ -43,7 +53,7 @@ export default function NewCouponPage() {
         setLoading(true)
         try {
             await createCouponAction({
-                store_id: storeId || '22222222-2222-2222-2222-222222222221',
+                store_id: storeId,
                 name: formData.name,
                 code: formData.code.toUpperCase(),
                 discount_type: formData.discount_type,

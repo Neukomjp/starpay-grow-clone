@@ -23,7 +23,7 @@ export function useCurrentOrganization() {
                     setOrganization(found as (Organization & { role: OrganizationRole }))
                 } else if (orgs.length > 0) {
                     // Fallback
-                    setOrganization(orgs.find(o => o.id === '11111111-1111-1111-1111-111111111111') as (Organization & { role: OrganizationRole }) || orgs[0] as (Organization & { role: OrganizationRole }))
+                    setOrganization(orgs[0] as (Organization & { role: OrganizationRole }))
                 }
             } else if (orgs.length > 0) {
                 setOrganization(orgs[0] as (Organization & { role: OrganizationRole }))

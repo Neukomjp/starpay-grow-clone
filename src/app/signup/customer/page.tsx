@@ -25,6 +25,14 @@ export default function CustomerSignupPage() {
         const phone = formData.get('phone') as string
         const supabase = createClient()
 
+        // Validate password: must contain at least one uppercase, one lowercase, and one number
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
+        if (!passwordRegex.test(password)) {
+            toast.error('パスワードは、大文字・小文字の英字と数字をそれぞれ1文字以上含む必要があります。')
+            setLoading(false)
+            return
+        }
+
         // 1. Sign up
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email,

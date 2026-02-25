@@ -18,20 +18,20 @@ CREATE POLICY "Public Access"
 ON storage.objects FOR SELECT
 USING ( bucket_id = 'store_assets' );
 
--- Allow authenticated users to upload new objects
-CREATE POLICY "Authenticated Users can upload"
+-- Allow public users to upload new objects
+CREATE POLICY "Public Users can upload"
 ON storage.objects FOR INSERT
-TO authenticated
+TO public
 WITH CHECK ( bucket_id = 'store_assets' );
 
--- Allow authenticated users to update objects (if needed)
-CREATE POLICY "Users can update their own uploads"
+-- Allow public users to update objects (if needed)
+CREATE POLICY "Public Users can update uploads"
 ON storage.objects FOR UPDATE
-TO authenticated
+TO public
 USING ( bucket_id = 'store_assets' );
 
--- Allow authenticated users to delete objects
-CREATE POLICY "Users can delete their own uploads"
+-- Allow public users to delete objects
+CREATE POLICY "Public Users can delete uploads"
 ON storage.objects FOR DELETE
-TO authenticated
+TO public
 USING ( bucket_id = 'store_assets' );

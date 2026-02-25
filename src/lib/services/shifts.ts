@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import { Shift } from '@/lib/types/shift'
+import { Shift, ShiftException } from '@/lib/types/shift'
 
 export const shiftService = {
     async getShiftsByStaffId(staffId: string) {
@@ -61,5 +61,62 @@ export const shiftService = {
 
         if (error) throw new Error(error.message)
         return data as Shift | null
+    },
+
+    // --- Shift Exceptions ---
+
+    async getShiftExceptionsByStoreId(storeId: string, startDate?: string, endDate?: string) {
+        const supabase = createClient()
+        const { data: staff, error: staffError } = await supabase
+            .from('staff')
+            .select('id')
+            .eq('store_id', storeId)
+
+        if (staffError) throw staffError
+
+        const staffIds = staff.map(s => s.id)
+        if (staffIds.length === 0) return []
+
+        let query = supabase
+            .from('staff_shift_exceptions')
+            .select('*')
+            .in('staff_id', staffIds)
+            .order('date', { ascending: true })
+
+        if (startDate) {
+            query = query.gte('date', startDate)
+        }
+        if (endDate) {
+            query = query.lte('date', endDate)
+        }
+
+        const { data, error } = await query
+
+        if (error) throw new Error(error.message)
+        return data as ShiftException[]
+    },
+
+    async upsertShiftException(exceptionConfig: Omit<ShiftException, 'id'>) {
+        const supabase = createClient()
+        const { data, error } = await supabase
+            .from('staff_shift_exceptions')
+            .upsert(exceptionConfig, { onConflict: 'staff_id, date' })
+            .select()
+            .single()
+
+        if (error) throw new Error(error.message)
+        return data as ShiftException
+    },
+
+    async deleteShiftException(staffId: string, date: string) {
+        const supabase = createClient()
+        const { error } = await supabase
+            .from('staff_shift_exceptions')
+            .delete()
+            .eq('staff_id', staffId)
+            .eq('date', date)
+
+        if (error) throw new Error(error.message)
+        return true
     }
 }

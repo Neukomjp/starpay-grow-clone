@@ -8,3 +8,15 @@ export type Shift = {
     break_end_time?: string | null // HH:mm:ss
     is_holiday: boolean
 }
+
+export type ShiftException = {
+    id: string
+    staff_id: string
+    date: string // YYYY-MM-DD
+    start_time?: string | null // HH:mm:ss
+    end_time?: string | null // HH:mm:ss
+    break_start_time?: string | null // HH:mm:ss
+    break_end_time?: string | null // HH:mm:ss
+    is_holiday: boolean
+}
+

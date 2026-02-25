@@ -24,6 +24,14 @@ export default function SignupPage() {
         const password = formData.get('password') as string
         const supabase = createClient()
 
+        // Validate password: must contain at least one uppercase, one lowercase, and one number
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
+        if (!passwordRegex.test(password)) {
+            toast.error('パスワードは、大文字・小文字の英字と数字をそれぞれ1文字以上含む必要があります。')
+            setLoading(false)
+            return
+        }
+
         const { error } = await supabase.auth.signUp({
             email,
             password,
@@ -36,7 +44,7 @@ export default function SignupPage() {
             toast.error(translateAuthError(error.message))
             setLoading(false)
         } else {
-            toast.success('Check your email to confirm your account')
+            toast.success('確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。')
             setLoading(false)
         }
     }

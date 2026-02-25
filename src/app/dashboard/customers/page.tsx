@@ -17,20 +17,43 @@ export default async function CustomersPage(props: Props) {
     const searchParams = await props.searchParams
     const query = searchParams.q
 
-    // Quick fetch for demo store
     const cookieStore = await cookies()
-    // Try to get from cookie, fallback to the one we know exists from tickets
-    const storeId = cookieStore.get('store-id')?.value || '22222222-2222-2222-2222-222222222221'
 
-    const customers = await customerService.getCustomers(storeId, query)
+    // Get organization ID
+    let orgId = cookieStore.get('organization-id')?.value
+    if (!orgId) {
+        const { getUserOrganizationsAction } = await import('@/lib/actions/organization')
+        const orgs = await getUserOrganizationsAction()
+        orgId = orgs[0]?.id
+    }
+
+    let storeId: string | null = cookieStore.get('store-id')?.value || null
+
+    // Validate that the storeId actually belongs to this organization
+    if (orgId) {
+        const { storeService } = await import('@/lib/services/stores')
+        const stores = await storeService.getStores(orgId)
+        const validStoreIds = stores.map(s => s.id)
+
+        // If the cookie's storeId is missing or doesn't belong to this org, use the org's first store
+        if (!storeId || !validStoreIds.includes(storeId)) {
+            storeId = stores.length > 0 ? stores[0].id : null
+        }
+    } else {
+        storeId = null
+    }
+
+    const customers = storeId ? await customerService.getCustomers(storeId, query) : []
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">顧客管理</h1>
-                <Button>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    顧客登録
+                <Button asChild>
+                    <Link href="/dashboard/customers/new">
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        顧客登録
+                    </Link>
                 </Button>
             </div>
 

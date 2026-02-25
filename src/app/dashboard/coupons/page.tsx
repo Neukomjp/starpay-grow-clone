@@ -4,12 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Plus, Ticket, Power, PowerOff } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { getCouponsAction, toggleCouponStatusAction } from '@/lib/actions/coupon'
-import { storeService } from '@/lib/services/stores'
+import { getStoresAction } from '@/lib/actions/store'
 import { CouponToggle } from './coupon-toggle'
 
 export default async function CouponsPage() {
     // In real app, get current store
-    const stores = await storeService.getStores()
+    const stores = await getStoresAction()
     const storeId = stores.length > 0 ? stores[0].id : ''
 
     const coupons = storeId ? await getCouponsAction(storeId) : []
