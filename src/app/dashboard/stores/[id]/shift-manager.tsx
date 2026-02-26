@@ -171,8 +171,8 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                 <TabsContent value="weekly" className="mt-0">
                     <Card>
                         <CardContent className="p-0">
-                            <div className="rounded-md border">
-                                <Table>
+                            <div className="rounded-md border overflow-x-auto">
+                                <Table className="min-w-max">
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead className="w-[150px]">スタッフ</TableHead>

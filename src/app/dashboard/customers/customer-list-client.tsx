@@ -101,8 +101,8 @@ export function CustomerListClient({ initialCustomers, storeId }: CustomerListCl
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent>
-                    <Table>
+                <CardContent className="overflow-x-auto">
+                    <Table className="min-w-max">
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[50px]">

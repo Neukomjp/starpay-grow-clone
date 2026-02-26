@@ -124,8 +124,8 @@ export function ServiceOptionsDialog({ storeId, service }: ServiceOptionsDialogP
                 </Button>
 
                 {/* Options List */}
-                <div className="border rounded-md mt-4">
-                    <Table>
+                <div className="border rounded-md mt-4 overflow-x-auto">
+                    <Table className="min-w-max">
                         <TableHeader>
                             <TableRow>
                                 <TableHead>オプション名</TableHead>

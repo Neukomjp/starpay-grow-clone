@@ -218,8 +218,8 @@ export function MenuManager({ storeId }: MenuManagerProps) {
                 </div>
             </div>
 
-            <div className="border rounded-md">
-                <Table>
+            <div className="border rounded-md overflow-x-auto">
+                <Table className="min-w-max">
                     <TableHeader>
                         <TableRow>
                             <TableHead>商品名</TableHead>

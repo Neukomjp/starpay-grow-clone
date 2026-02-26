@@ -69,8 +69,8 @@ export default async function CustomersPage(props: Props) {
                         <CustomerSearch />
                     </div>
 
-                    <div className="rounded-md border">
-                        <Table>
+                    <div className="rounded-md border overflow-x-auto">
+                        <Table className="min-w-max">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>名前</TableHead>

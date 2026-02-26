@@ -46,8 +46,8 @@ export default function PaymentsPage() {
                     <CardTitle>Transaction History</CardTitle>
                     <CardDescription>Recent payment logs from all channels.</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <Table>
+                <CardContent className="overflow-x-auto">
+                    <Table className="min-w-max">
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Date</TableHead>
