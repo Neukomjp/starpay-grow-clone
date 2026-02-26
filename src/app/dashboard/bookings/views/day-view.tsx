@@ -9,12 +9,13 @@ import { VisitRecordDialog } from '@/components/visit-record-dialog'
 import { FileText } from 'lucide-react'
 import { ja } from 'date-fns/locale'
 import { Staff } from '@/types/staff'
+import { Booking } from '@/types/booking'
 import { format, differenceInMinutes, getHours, getMinutes } from 'date-fns'
 
 interface DayViewProps {
     date: Date | undefined
     setDate: (date: Date | undefined) => void
-    bookings: any[]
+    bookings: Booking[]
     storeId: string
     onStatusUpdate: (bookingId: string, status: 'confirmed' | 'cancelled') => Promise<void>
 }
@@ -132,9 +133,9 @@ export function DayView({ date, setDate, bookings, storeId, onStatusUpdate }: Da
                                                     {(booking.status === 'confirmed' || booking.status === 'completed') && (
                                                         <VisitRecordDialog
                                                             storeId={storeId}
-                                                            customerId={booking.customer_id}
+                                                            customerId={booking.customer_id || ''}
                                                             bookingId={booking.id}
-                                                            staffId={booking.staff_id}
+                                                            staffId={booking.staff_id || undefined}
                                                             trigger={
                                                                 <Button size="icon" variant="ghost" className="h-6 w-6 bg-white/50 hover:bg-white" title="来店記録を作成">
                                                                     <FileText className="h-3 w-3" />

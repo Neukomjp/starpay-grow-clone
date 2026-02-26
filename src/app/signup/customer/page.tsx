@@ -66,8 +66,13 @@ export default function CustomerSignupPage() {
                 console.error('Profile creation error:', profileError)
                 toast.error('アカウント作成中にエラーが発生しました')
             } else {
-                toast.success('アカウントを作成しました！')
-                router.push('/mypage')
+                if (authData.session) {
+                    toast.success('アカウントを作成しました！')
+                    router.push('/mypage')
+                } else {
+                    toast.success('アカウントを作成しました！確認メールをご確認ください。')
+                    router.push('/login/customer')
+                }
             }
         }
         setLoading(false)

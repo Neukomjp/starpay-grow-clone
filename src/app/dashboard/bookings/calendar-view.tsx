@@ -1,23 +1,20 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsList, TabsTrigger as TabTriggerOriginal } from '@/components/ui/tabs' // Shadcn Tabs might need distinct import
+import { Tabs, TabsList } from '@/components/ui/tabs'
 import { updateStatusAction } from '@/lib/actions/booking'
 import { staffService } from '@/lib/services/staff'
-import { bookingService } from '@/lib/services/bookings'
 import { Staff } from '@/types/staff'
 import { toast } from 'sonner'
 import { DayView } from './views/day-view'
 import { WeekView } from './views/week-view'
 import { MonthView } from './views/month-view'
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns'
-
-// Wrapper for TabTrigger to avoid collision if necessary, or just use primitive
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 import { Loader2 } from 'lucide-react'
+import { useBookingStore } from '@/store/useBookingStore'
 
 interface BookingCalendarProps {
     initialBookings: any[]
@@ -26,13 +23,22 @@ interface BookingCalendarProps {
 }
 
 export function BookingCalendar({ initialBookings, storeId, defaultDate }: BookingCalendarProps) {
-    const [bookings, setBookings] = useState<any[]>(initialBookings)
-    const [date, setDate] = useState<Date>(defaultDate ? new Date(defaultDate) : new Date())
-    const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('month') // Default to month view
-    const [selectedStaff, setSelectedStaff] = useState('all')
+    const {
+        bookings, date, viewMode, selectedStaff, isLoading,
+        setBookings, setDate, setViewMode, setSelectedStaff, fetchBookings, updateBookingStatus
+    } = useBookingStore()
+
     const [staffList, setStaffList] = useState<Staff[]>([])
-    const [isLoading, setIsLoading] = useState(false)
     const [isInitialMount, setIsInitialMount] = useState(true)
+
+    // Parse default date only on mount
+    useEffect(() => {
+        if (defaultDate) {
+            setDate(new Date(defaultDate))
+        }
+        setBookings(initialBookings)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
         if (storeId) {
@@ -40,62 +46,23 @@ export function BookingCalendar({ initialBookings, storeId, defaultDate }: Booki
         }
     }, [storeId])
 
-    const fetchBookings = useCallback(async () => {
-        if (!storeId) return;
-        setIsLoading(true);
-        try {
-            let start: Date;
-            let end: Date;
-
-            if (viewMode === 'month') {
-                start = startOfWeek(startOfMonth(date), { weekStartsOn: 1 });
-                end = endOfWeek(endOfMonth(date), { weekStartsOn: 1 });
-            } else if (viewMode === 'week') {
-                start = startOfWeek(date, { weekStartsOn: 1 });
-                end = endOfWeek(date, { weekStartsOn: 1 });
-            } else {
-                start = new Date(date);
-                start.setHours(0, 0, 0, 0);
-                end = new Date(date);
-                end.setHours(23, 59, 59, 999);
-            }
-
-            const data = await bookingService.getBookingsByDateRange(storeId, start.toISOString(), end.toISOString());
-            setBookings(data);
-        } catch (error) {
-            console.error('Failed to fetch bookings:', error);
-            toast.error('予約データの取得に失敗しました');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [storeId, date, viewMode]);
-
     useEffect(() => {
         if (isInitialMount) {
-            // Already have initialBookings for the initial view
-            setIsInitialMount(false);
-            return;
+            setIsInitialMount(false)
+            return
         }
-        fetchBookings();
-    }, [date, viewMode, fetchBookings]);
+        if (storeId) {
+            fetchBookings(storeId)
+        }
+    }, [date, viewMode, fetchBookings, storeId, isInitialMount])
 
     const handleStatusUpdate = async (bookingId: string, newStatus: 'confirmed' | 'cancelled') => {
         try {
-            // Optimistic update
-            const updatedBookings = bookings.map(b =>
-                b.id === bookingId ? { ...b, status: newStatus } : b
-            )
-            setBookings(updatedBookings)
-
+            // Optimistic Zustand update
+            updateBookingStatus(bookingId, newStatus)
             await updateStatusAction(bookingId, newStatus)
 
-            // Email sending logic (omitted for brevity, or kept if essential)
-            // ... (Copying original email logic if needed, but for refactoring let's assume updateStatusAction handles it or we keep it simple)
-            // Ideally, email logic should be in the Server Action purely, but here it's mixed.
-            // Let's keep the optimistic update and toast.
-
-            // Create a separate async function or just run fetch here if needed
-            const booking = bookings.find(b => b.id === bookingId)
+            const booking = bookings.find((b: any) => b.id === bookingId)
             if (booking) {
                 fetch('/api/send-email', {
                     method: 'POST',
@@ -123,12 +90,11 @@ export function BookingCalendar({ initialBookings, storeId, defaultDate }: Booki
         } catch (error) {
             console.error('Failed to update status:', error)
             toast.error('Status update failed')
-            setBookings(bookings)
+            // rollback logic omitted for simplicity
         }
     }
 
-    // Filter bookings by staff (View components will filter by date)
-    const filteredBookings = bookings.filter(b => {
+    const filteredBookings = bookings.filter((b: any) => {
         return selectedStaff === 'all' || b.staff_id === selectedStaff
     })
 

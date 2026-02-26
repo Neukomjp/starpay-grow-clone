@@ -22,11 +22,27 @@ export async function getStoresAction() {
 }
 
 export async function createStoreAction(name: string, slug: string) {
-    const supabase = await createClient()
-    const orgId = (await cookies()).get('organization-id')?.value
-    const result = await storeService.createStore(name, slug, orgId, supabase)
-    revalidatePath('/dashboard/stores')
-    return result
+    try {
+        const supabase = await createClient()
+
+        let orgId = (await cookies()).get('organization-id')?.value
+        if (!orgId) {
+            const { getUserOrganizationsAction } = await import('@/lib/actions/organization')
+            const orgs = await getUserOrganizationsAction()
+            orgId = orgs[0]?.id
+        }
+
+        if (!orgId) {
+            orgId = '11111111-1111-1111-1111-111111111111' // Demo Organization Fallback
+        }
+
+        const result = await storeService.createStore(name, slug, orgId, supabase)
+        revalidatePath('/dashboard/stores')
+        return result
+    } catch (error: any) {
+        console.error('createStoreAction failed:', error.message || error)
+        throw error
+    }
 }
 
 

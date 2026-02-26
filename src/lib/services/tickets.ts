@@ -56,6 +56,34 @@ export const ticketService = {
         return data as CustomerTicket[]
     },
 
+    async getCustomerTicketsByAuthUserId(authUserId: string) {
+        const supabase = createClient()
+
+        // First get all customer IDs linked to this auth_user_id
+        const { data: customers, error: customerError } = await supabase
+            .from('customers')
+            .select('id')
+            .eq('auth_user_id', authUserId)
+
+        if (customerError) throw new Error(customerError.message)
+
+        const customerIds = customers?.map(c => c.id) || []
+
+        if (customerIds.length === 0) return []
+
+        const { data, error } = await supabase
+            .from('customer_tickets')
+            .select(`
+                *,
+                customer:customer_id(store_id)
+            `)
+            .in('customer_id', customerIds)
+            .order('created_at', { ascending: false })
+
+        if (error) throw new Error(error.message)
+        return data as CustomerTicket[]
+    },
+
     async issueTicketToCustomer(customerId: string, ticketMasterId: string) {
         const supabase = createClient()
 

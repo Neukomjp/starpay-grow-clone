@@ -7,11 +7,12 @@ import { EditBookingDialog } from '../edit-booking-dialog'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { format, addMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth } from 'date-fns'
 import { ja } from 'date-fns/locale'
+import { Booking } from '@/types/booking'
 
 interface MonthViewProps {
     date: Date
     setDate: (date: Date) => void
-    bookings: any[]
+    bookings: Booking[]
     storeId: string
     onStatusUpdate: (bookingId: string, status: 'confirmed' | 'cancelled') => Promise<void>
 }

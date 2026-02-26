@@ -1,40 +1,53 @@
 'use server'
 
-import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
 import { customerService } from '@/lib/services/customers'
 import { revalidatePath } from 'next/cache'
 
-export async function loginCustomerAction(email: string) {
-    const customer = await customerService.getCustomerByEmail(email)
+export async function loginCustomerAction(email: string, password?: string) {
+    const supabase = await createClient()
 
-    if (!customer) {
-        return { success: false, message: 'Customer not found' }
+    // Assuming we use Supabase Auth for customers
+    if (!password) {
+        return { success: false, message: 'Password is required' }
     }
 
-    const cookieStore = await cookies()
-    cookieStore.set('customer-session-email', email, {
-        path: '/',
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 7 // 1 week
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
     })
 
-    return { success: true, customer }
+    if (error) {
+        return { success: false, message: error.message }
+    }
+
+    revalidatePath('/', 'layout')
+
+    return { success: true }
 }
 
 export async function logoutCustomerAction() {
-    const cookieStore = await cookies()
-    cookieStore.delete('customer-session-email')
+    const supabase = await createClient()
+    const { error } = await supabase.auth.signOut()
+
+    revalidatePath('/', 'layout')
+
+    if (error) {
+        return { success: false, message: error.message }
+    }
     return { success: true }
 }
 
 export async function getCurrentCustomerAction() {
-    const cookieStore = await cookies()
-    const email = cookieStore.get('customer-session-email')?.value
+    const supabase = await createClient()
 
-    if (!email) {
+    // Get currently logged-in user from Supabase
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
         return null
     }
 
-    const customer = await customerService.getCustomerByEmail(email)
-    return customer
+    // Return the global auth user for the mypage and other global areas
+    return user
 }

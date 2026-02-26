@@ -11,7 +11,8 @@ import { Badge } from '@/components/ui/badge'
 import { Calendar, Clock, LogOut, User } from 'lucide-react'
 
 import { getCurrentCustomerAction, logoutCustomerAction } from '@/lib/actions/auth'
-import { getCustomerTicketsAction } from '@/lib/actions/tickets'
+import { getCustomerTicketsByAuthUserIdAction } from '@/lib/actions/tickets'
+import { getBookingsByAuthUserIdAction } from '@/lib/actions/booking'
 import { getStoreByIdAction } from '@/lib/actions/store'
 
 export default function MyPage() {
@@ -27,24 +28,24 @@ export default function MyPage() {
     }, [])
 
     async function checkUser() {
-        const customer = await getCurrentCustomerAction()
+        const authUser = await getCurrentCustomerAction()
 
-        if (!customer) {
+        if (!authUser) {
             router.push('/login/customer')
             return
         }
 
-        setUser(customer)
-        // Parallel fetch
-        const [bookingsData, ticketsData, storeData] = await Promise.all([
-            getBookingsByCustomerIdAction(customer.id),
-            getCustomerTicketsAction(customer.id),
-            getStoreByIdAction(customer.store_id)
+        setUser(authUser)
+
+        // Parallel fetch using auth_user_id
+        const [bookingsData, ticketsData] = await Promise.all([
+            getBookingsByAuthUserIdAction(authUser.id),
+            getCustomerTicketsByAuthUserIdAction(authUser.id)
         ])
 
         setBookings(bookingsData || [])
         setTickets(ticketsData || [])
-        setStore(storeData)
+        setStore(null) // Mypage doesn't belong to a single store anymore
         setLoading(false)
     }
 

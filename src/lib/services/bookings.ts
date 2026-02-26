@@ -1,22 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-
-export type Booking = {
-    id: string
-    store_id: string
-    staff_id: string | null
-    service_id: string | null
-    customer_id: string | null
-    customer_name: string
-    options?: { name: string, price: number, duration_minutes: number }[]
-    total_price: number
-    payment_status: 'unpaid' | 'paid' | 'refunded'
-    payment_method: 'local' | 'card' | 'paypay' | null
-    start_time: string
-    end_time: string
-    status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
-    buffer_minutes_before?: number
-    buffer_minutes_after?: number
-}
+import { Booking } from '@/types/booking'
 
 export const bookingService = {
     async getBookingsByDateRange(storeId: string, startDate: string, endDate: string) {
@@ -355,6 +338,40 @@ export const bookingService = {
                     service:service_id(name, price, duration_minutes)
                 `)
                 .eq('customer_id', customerId)
+                .order('start_time', { ascending: false })
+
+            if (error) throw new Error(error.message)
+            return data as any[]
+        } catch (error: any) {
+            throw new Error(error.message || JSON.stringify(error))
+        }
+    },
+
+    async getBookingsByAuthUserId(authUserId: string) {
+        try {
+            const supabase = createClient()
+
+            // First get all customer IDs linked to this auth_user_id
+            const { data: customers, error: customerError } = await supabase
+                .from('customers')
+                .select('id')
+                .eq('auth_user_id', authUserId)
+
+            if (customerError) throw new Error(customerError.message)
+
+            const customerIds = customers?.map(c => c.id) || []
+
+            if (customerIds.length === 0) return []
+
+            const { data, error } = await supabase
+                .from('bookings')
+                .select(`
+                    *,
+                    store:store_id(name, slug),
+                    staff:staff_id(name),
+                    service:service_id(name, price, duration_minutes)
+                `)
+                .in('customer_id', customerIds)
                 .order('start_time', { ascending: false })
 
             if (error) throw new Error(error.message)

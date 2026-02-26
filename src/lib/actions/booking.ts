@@ -111,6 +111,10 @@ export async function getBookingsByCustomerIdAction(customerId: string) {
     return await bookingService.getBookingsByCustomerId(customerId)
 }
 
+export async function getBookingsByAuthUserIdAction(authUserId: string) {
+    return await bookingService.getBookingsByAuthUserId(authUserId)
+}
+
 export async function cancelBookingAction(bookingId: string) {
     const booking = await bookingService.getBookingById(bookingId)
 

@@ -26,6 +26,10 @@ export async function getCustomerTicketsAction(customerId: string) {
     return await ticketService.getCustomerTickets(customerId)
 }
 
+export async function getCustomerTicketsByAuthUserIdAction(authUserId: string) {
+    return await ticketService.getCustomerTicketsByAuthUserId(authUserId)
+}
+
 export async function issueTicketToCustomerAction(customerId: string, ticketMasterId: string) {
     const result = await ticketService.issueTicketToCustomer(customerId, ticketMasterId)
     revalidatePath(`/dashboard/customers/${customerId}`)

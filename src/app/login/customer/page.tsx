@@ -22,12 +22,13 @@ export default function CustomerLoginPage() {
 
         const formData = new FormData(event.currentTarget)
         const email = formData.get('email') as string
+        const password = formData.get('password') as string
 
         try {
-            const result = await loginCustomerAction(email)
+            const result = await loginCustomerAction(email, password)
 
             if (!result.success) {
-                toast.error('ログインに失敗しました。メールアドレスを確認してください。')
+                toast.error(result.message || 'ログインに失敗しました。メールアドレスとパスワードを確認してください。')
                 setLoading(false)
             } else {
                 toast.success('ログインしました')
@@ -57,14 +58,9 @@ export default function CustomerLoginPage() {
                             <Input id="email" name="email" type="email" required placeholder="m@example.com" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="email">メールアドレス</Label>
-                            <Input id="email" name="email" type="email" required placeholder="m@example.com" />
-                            <p className="text-sm text-gray-500">※デモ環境のためパスワードは不要です</p>
-                        </div>
-                        {/* <div className="space-y-2">
                             <Label htmlFor="password">パスワード</Label>
                             <Input id="password" name="password" type="password" required />
-                        </div> */}
+                        </div>
                         <Button type="submit" className="w-full" disabled={loading}>
                             {loading ? 'ログイン中...' : 'ログイン'}
                         </Button>
