@@ -12,12 +12,12 @@ const transactions = [
 export default function PaymentsPage() {
     return (
         <div className="space-y-6">
-            <h2 className="text-3xl font-bold tracking-tight">Payments</h2>
+            <h2 className="text-3xl font-bold tracking-tight">決済・売上</h2>
 
             <div className="grid gap-4 md:grid-cols-3">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Total Sales (Today)</CardTitle>
+                        <CardTitle className="text-sm font-medium">本日の売上</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">¥15,450</div>
@@ -25,7 +25,7 @@ export default function PaymentsPage() {
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Transactions</CardTitle>
+                        <CardTitle className="text-sm font-medium">決済回数</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">12</div>
@@ -33,7 +33,7 @@ export default function PaymentsPage() {
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Average Order Value</CardTitle>
+                        <CardTitle className="text-sm font-medium">平均客単価</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">¥1,287</div>
@@ -43,17 +43,17 @@ export default function PaymentsPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Transaction History</CardTitle>
-                    <CardDescription>Recent payment logs from all channels.</CardDescription>
+                    <CardTitle>決済履歴</CardTitle>
+                    <CardDescription>すべてのチャネルの最近の決済ログ</CardDescription>
                 </CardHeader>
                 <CardContent className="overflow-x-auto">
                     <Table className="min-w-max">
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Payment Method</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead>日時</TableHead>
+                                <TableHead>決済方法</TableHead>
+                                <TableHead>金額</TableHead>
+                                <TableHead>ステータス</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -64,7 +64,7 @@ export default function PaymentsPage() {
                                     <TableCell>¥{tx.amount}</TableCell>
                                     <TableCell>
                                         <Badge variant={tx.status === 'Success' ? 'default' : 'destructive'}>
-                                            {tx.status}
+                                            {tx.status === 'Success' ? '成功' : '失敗'}
                                         </Badge>
                                     </TableCell>
                                 </TableRow>
