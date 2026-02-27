@@ -87,7 +87,6 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
             setLoading(true)
             try {
                 // Calculate total duration from ALL selected services
-                let totalDuration = 0
 
                 for (const item of selectedServices) {
                     const service = services.find(s => s.id === item.serviceId)

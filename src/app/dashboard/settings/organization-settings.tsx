@@ -111,7 +111,7 @@ export function OrganizationSettings() {
                         />
                         <div className="grid gap-1.5 leading-none">
                             <Label htmlFor="remove-branding" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                "Powered by Service" の表示を削除
+                                &quot;Powered by Service&quot; の表示を削除
                             </Label>
                             <p className="text-xs text-muted-foreground">
                                 フッターや予約画面からサービスロゴを非表示にします。

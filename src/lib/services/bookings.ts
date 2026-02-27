@@ -301,8 +301,8 @@ export const bookingService = {
                             bEnd.setMinutes(bEnd.getMinutes() + 60)
                         }
 
-                        let bStartMin = bStart.getHours() * 60 + bStart.getMinutes()
-                        let bEndMin = bEnd.getHours() * 60 + bEnd.getMinutes()
+                        const bStartMin = bStart.getHours() * 60 + bStart.getMinutes()
+                        const bEndMin = bEnd.getHours() * 60 + bEnd.getMinutes()
 
                         // Apply buffer of EXISTING booking if present
                         const bBufferBefore = b.buffer_minutes_before || 0
