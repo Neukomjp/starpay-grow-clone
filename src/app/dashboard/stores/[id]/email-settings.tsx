@@ -72,7 +72,38 @@ export function EmailSettings({ store }: EmailSettingsProps) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="grid gap-2">
+                    <div className="grid gap-4 border-b pb-6 mb-2">
+                        <div>
+                            <h4 className="font-semibold text-sm">基本設定</h4>
+                            <p className="text-xs text-muted-foreground">メールの送信元として表示される情報です。</p>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="sender_name">送信元名 (From名)</Label>
+                            <Input
+                                id="sender_name"
+                                placeholder="StarPay Salon"
+                                value={config.sender_name || ''}
+                                onChange={(e) => setConfig(prev => ({ ...prev, sender_name: e.target.value }))}
+                            />
+                            <p className="text-xs text-gray-500">お客様に表示される送信者の名前です。</p>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="sender_email">送信元メールアドレス</Label>
+                            <Input
+                                id="sender_email"
+                                type="email"
+                                placeholder="info@yourdomain.com"
+                                value={config.sender_email || ''}
+                                onChange={(e) => setConfig(prev => ({ ...prev, sender_email: e.target.value }))}
+                            />
+                            <p className="text-xs text-gray-500">
+                                指定しない場合はシステムのデフォルトアドレスが使用されます。<br />
+                                ※独自ドメインを使用する場合はResend側でのドメイン認証設定が別途必要です。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-2 pt-2">
                         <Label htmlFor="subject">件名</Label>
                         <Input
                             id="subject"

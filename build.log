@@ -1,0 +1,23 @@
+
+> starpay-grow-clone@0.1.0 build
+> next build
+
+笆ｲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+笨・Compiled successfully in 4.6s
+  Running TypeScript ...
+Failed to compile.
+
+./test-rls.ts:2:31
+Type error: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+  1 | import { createClient } from '@supabase/supabase-js';
+> 2 | const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+    |                               ^
+  3 | async function run() {
+  4 |   const { data, error } = await supabase.rpc('query_pg_policies');
+  5 |   if (error) console.log('RPC error:', error.message);
+Next.js build worker exited with code: 1 and signal: null

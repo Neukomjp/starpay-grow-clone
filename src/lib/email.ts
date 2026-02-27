@@ -8,17 +8,21 @@ interface EmailParams {
     to: string | string[];
     subject: string;
     html: string;
+    fromEmail?: string;
+    fromName?: string;
 }
 
-export async function sendEmail({ to, subject, html }: EmailParams) {
+export async function sendEmail({ to, subject, html, fromEmail, fromName }: EmailParams) {
     if (!process.env.RESEND_API_KEY) {
         console.warn('RESEND_API_KEY is not set. Email sending skipped.');
         return { success: false, error: 'API Key missing' };
     }
 
     try {
+        const sender = fromEmail ? `${fromName || 'Salon Booking System'} <${fromEmail}>` : 'Salon Booking System <onboarding@resend.dev>';
+
         const { data, error } = await resend.emails.send({
-            from: 'Salon Booking System <onboarding@resend.dev>', // Default sender for testing
+            from: sender,
             to: Array.isArray(to) ? to : [to],
             // resend free tier only allows sending to verified email, or to yourself (the account owner)
             // ensuring this doesn't break app flow

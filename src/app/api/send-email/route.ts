@@ -9,8 +9,9 @@ export async function POST(request: Request) {
         let htmlContent = ''
 
         // Try to fetch store config if storeId is provided
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let emailConfig: any = null
+        let fromName: string | undefined = undefined
+        let fromEmail: string | undefined = undefined
         if (storeId) {
             try {
                 // We import storeService dynamically to avoid circular deps if any, 
@@ -19,6 +20,8 @@ export async function POST(request: Request) {
                 const store = await storeService.getStoreById(storeId)
                 if (store && store.email_config) {
                     emailConfig = store.email_config
+                    fromName = emailConfig.sender_name
+                    fromEmail = emailConfig.sender_email
                 }
             } catch (e) {
                 console.warn('Failed to fetch store config for email:', e)
@@ -82,7 +85,9 @@ export async function POST(request: Request) {
         const result = await sendEmail({
             to,
             subject,
-            html: htmlContent
+            html: htmlContent,
+            fromName,
+            fromEmail
         })
 
         if (!result.success) {

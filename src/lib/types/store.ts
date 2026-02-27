@@ -12,6 +12,8 @@ export type StoreData = {
     booking_interval_minutes?: number
     theme_config?: Record<string, unknown>
     email_config?: {
+        sender_name?: string
+        sender_email?: string
         booking_confirmation?: {
             subject: string
             body: string // HTML or text template
