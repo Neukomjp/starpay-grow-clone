@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { CustomerTicket, TicketMaster } from '@/lib/types/ticket'
 import { Customer } from '@/lib/types/customer'
 import { consumeTicketAction, issueTicketToCustomerAction } from '@/lib/actions/tickets'
@@ -11,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
-import { ArrowLeft, Ticket, History, User } from 'lucide-react'
+import { ArrowLeft, Ticket } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 
@@ -22,7 +21,6 @@ interface CustomerDetailsProps {
 }
 
 export function CustomerDetails({ customer, initialTickets, ticketMasters }: CustomerDetailsProps) {
-    const router = useRouter()
     const [tickets, setTickets] = useState<CustomerTicket[]>(initialTickets)
     const [isGrantDialogOpen, setIsGrantDialogOpen] = useState(false)
     const [selectedMasterId, setSelectedMasterId] = useState<string>('')

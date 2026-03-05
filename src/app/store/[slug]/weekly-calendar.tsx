@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { addDays, format, startOfWeek, subWeeks, addWeeks, isSameDay, isBefore, startOfDay, parse } from 'date-fns'
+import { addDays, format, subWeeks, addWeeks, isSameDay, isBefore, startOfDay } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,9 +8,7 @@ import { getWeeklyAvailabilityAction } from '@/lib/actions/booking'
 
 interface WeeklyCalendarProps {
     storeId: string
-    selected?: Date
     onSelect?: (date: Date, time?: string) => void
-    themeColor?: string
     className?: string
     durationMinutes?: number
     staffId?: string
@@ -18,7 +16,7 @@ interface WeeklyCalendarProps {
     bufferAfter?: number
 }
 
-export function WeeklyCalendar({ storeId, selected, onSelect, themeColor, className, durationMinutes, staffId, bufferBefore, bufferAfter }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ storeId, onSelect, className, durationMinutes, staffId, bufferBefore, bufferAfter }: WeeklyCalendarProps) {
     const today = startOfDay(new Date())
 
     // State to track the start of the currently displayed week

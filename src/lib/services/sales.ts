@@ -86,8 +86,7 @@ export const salesService = {
             aggregation[key] = { month: key, sales: 0, bookings: 0 }
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data?.forEach((b: any) => {
+        data?.forEach((b) => {
             const date = new Date(b.start_time)
             const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`
             if (aggregation[key]) {

@@ -19,8 +19,8 @@ export const bookingService = {
 
             if (error) throw new Error(error.message)
             return data
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -39,11 +39,12 @@ export const bookingService = {
 
             if (error) throw new Error(error.message)
             return data
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async createBooking(booking: Omit<Booking, 'id' | 'status'>, customClient?: any) {
         try {
             const supabase = customClient || createClient()
@@ -55,8 +56,8 @@ export const bookingService = {
 
             if (error) throw new Error(error.message)
             return data as Booking
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -69,8 +70,8 @@ export const bookingService = {
                 .eq('id', id)
 
             if (error) throw new Error(error.message)
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -86,8 +87,8 @@ export const bookingService = {
 
             if (error) throw new Error(error.message)
             return data as Booking
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -100,8 +101,8 @@ export const bookingService = {
                 .eq('id', id)
 
             if (error) throw new Error(error.message)
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -116,11 +117,12 @@ export const bookingService = {
 
             if (error) throw new Error(error.message)
             return data as Booking
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async getAvailableTimeSlots(storeId: string, date: Date, durationMinutes: number, staffId?: string, bufferBefore: number = 0, bufferAfter: number = 0, customClient?: any): Promise<string[]> {
         try {
             const supabase = customClient || createClient()
@@ -145,6 +147,7 @@ export const bookingService = {
                     .eq('store_id', storeId)
 
                 if (staffError) throw staffError
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 staffIds = staff?.map((s: any) => s.id) || []
             }
 
@@ -181,20 +184,22 @@ export const bookingService = {
 
             return this._calculateSlots(shifts, bookings, durationMinutes, staffIds, interval, bufferBefore, bufferAfter, businessDays, date)
 
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
-    // Extracted for potential reuse/testing, though simple mock bypasses it
     _calculateSlots(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         shifts: any[],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         bookings: any[],
         durationMinutes: number,
         staffIds: string[],
         interval: number,
         bufferBefore: number = 0,
         bufferAfter: number = 0,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         businessDays?: any[],
         // We need the date to know which day of week applies, but date is not passed to _calculateSlots currently?
         // Ah, loops 0-24h, so it's day-agnostic unless we know the day config.
@@ -212,6 +217,7 @@ export const bookingService = {
 
         if (businessDays && targetDate) {
             const dayOfWeek = targetDate.getDay() // 0-6
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const config = businessDays.find((d: any) => d.day_of_week === dayOfWeek)
             if (config) {
                 if (config.is_closed) {
@@ -341,9 +347,10 @@ export const bookingService = {
                 .order('start_time', { ascending: false })
 
             if (error) throw new Error(error.message)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return data as any[]
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -375,9 +382,10 @@ export const bookingService = {
                 .order('start_time', { ascending: false })
 
             if (error) throw new Error(error.message)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return data as any[]
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -389,6 +397,7 @@ export const bookingService = {
         bufferBefore: number = 0,
         bufferAfter: number = 0,
         days: number = 7,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         customClient?: any
     ): Promise<Record<string, string[]>> {
         const availability: Record<string, string[]> = {}

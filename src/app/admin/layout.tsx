@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { LayoutDashboard, Building2, Users, Settings, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
 export default function AdminLayout({

@@ -10,10 +10,13 @@ import { toast } from 'sonner'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { OrganizationSettings } from './organization-settings'
+import { useCurrentOrganization } from '@/hooks/use-current-organization'
+import { canManageSettings } from '@/lib/rbac'
 
 export default function SettingsPage() {
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(true)
+    const { organization, loading: orgLoading } = useCurrentOrganization()
 
     useEffect(() => {
         const supabase = createClient()
@@ -31,8 +34,17 @@ export default function SettingsPage() {
         toast.info('プロフィールの更新機能は現在開発中です')
     }
 
-    if (loading) {
+    if (loading || orgLoading) {
         return <div className="p-8">読み込み中...</div>
+    }
+
+    if (organization && !canManageSettings(organization.role)) {
+        return (
+            <div className="p-8 text-center bg-gray-50 rounded-lg border border-gray-200 mt-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">アクセス権限がありません</h3>
+                <p className="text-gray-500">設定ページを表示する権限がありません。管理者にお問い合わせください。</p>
+            </div>
+        )
     }
 
     return (

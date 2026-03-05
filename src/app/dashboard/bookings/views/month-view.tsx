@@ -1,7 +1,6 @@
 
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { EditBookingDialog } from '../edit-booking-dialog'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -14,10 +13,9 @@ interface MonthViewProps {
     setDate: (date: Date) => void
     bookings: Booking[]
     storeId: string
-    onStatusUpdate: (bookingId: string, status: 'confirmed' | 'cancelled') => Promise<void>
 }
 
-export function MonthView({ date, setDate, bookings, storeId, onStatusUpdate }: MonthViewProps) {
+export function MonthView({ date, setDate, bookings, storeId }: MonthViewProps) {
     const monthStart = startOfMonth(date)
     const monthEnd = endOfMonth(date)
     const startDate = startOfWeek(monthStart, { weekStartsOn: 1 }) // Monday start
@@ -30,21 +28,21 @@ export function MonthView({ date, setDate, bookings, storeId, onStatusUpdate }: 
     const prevMonth = () => setDate(addMonths(date, -1))
 
     return (
-        <Card className="h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center justify-between py-4">
+        <div className="h-full flex flex-col bg-white rounded-xl shadow-sm border border-slate-200">
+            <div className="flex flex-row items-center justify-between py-4 px-6 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                     <Button variant="outline" size="icon" onClick={prevMonth}>
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <CardTitle>
+                    <h3 className="text-lg font-semibold text-slate-900">
                         {format(date, 'yyyy年 M月', { locale: ja })}
-                    </CardTitle>
+                    </h3>
                     <Button variant="outline" size="icon" onClick={nextMonth}>
                         <ChevronRight className="h-4 w-4" />
                     </Button>
                 </div>
-            </CardHeader>
-            <CardContent className="flex-1 p-0 overflow-auto">
+            </div>
+            <div className="flex-1 p-0 overflow-auto">
                 <div className="flex flex-col h-full min-w-[800px]">
                     {/* Header: Days */}
                     <div className="grid grid-cols-7 border-b">
@@ -116,7 +114,7 @@ export function MonthView({ date, setDate, bookings, storeId, onStatusUpdate }: 
                         })}
                     </div>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     )
 }

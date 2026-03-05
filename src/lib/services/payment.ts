@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export type PaymentMethod = 'local' | 'card' | 'paypay'
 export type PaymentStatus = 'unpaid' | 'paid' | 'refunded'

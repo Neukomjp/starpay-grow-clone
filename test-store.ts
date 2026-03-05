@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createStoreAction } from './src/lib/actions/store'
 import 'dotenv/config'
 

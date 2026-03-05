@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -11,8 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { CalendarIcon, Loader2, Plus, X } from 'lucide-react'
-import { VisitRecord } from '@/lib/types/visit-record'
-import { visitService } from '@/lib/services/visits'
+import { createVisitRecordAction } from '@/lib/actions/visit'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
@@ -50,7 +49,7 @@ export function VisitRecordDialog({ storeId, customerId, bookingId, staffId, onR
 
         setLoading(true)
         try {
-            await visitService.createVisitRecord({
+            await createVisitRecordAction({
                 store_id: storeId,
                 customer_id: customerId,
                 booking_id: bookingId,

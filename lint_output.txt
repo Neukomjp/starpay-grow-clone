@@ -41,21 +41,19 @@ C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboar
    19:25   warning  'Search' is defined but never used                                                                                           @typescript-eslint/no-unused-vars
    19:33   warning  'User' is defined but never used                                                                                             @typescript-eslint/no-unused-vars
    72:8    warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                  react-hooks/exhaustive-deps
-   90:21   error    'totalDuration' is never reassigned. Use 'const' instead                                                                     prefer-const
-   90:21   warning  'totalDuration' is assigned a value but never used                                                                           @typescript-eslint/no-unused-vars
-  112:70   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  135:8    warning  React Hook useEffect has missing dependencies: 'services' and 'storeId'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
-  147:18   warning  'error' is defined but never used                                                                                            @typescript-eslint/no-unused-vars
-  202:29   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  214:71   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  215:68   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  289:60   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  290:62   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  368:77   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  373:87   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  409:107  error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  481:70   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
-  482:133  error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  111:70   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  134:8    warning  React Hook useEffect has missing dependencies: 'services' and 'storeId'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  146:18   warning  'error' is defined but never used                                                                                            @typescript-eslint/no-unused-vars
+  201:29   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  213:71   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  214:68   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  288:60   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  289:62   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  367:77   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  372:87   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  408:107  error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  480:70   error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  481:133  error    Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\bookings\views\day-view.tsx
    11:10   warning  'Staff' is defined but never used           @typescript-eslint/no-unused-vars
@@ -111,9 +109,7 @@ C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboar
   36:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\settings\organization-settings.tsx
-   25:19  warning  'brandingInput' is assigned a value but never used               @typescript-eslint/no-unused-vars
-  114:33  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
-  114:52  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  25:19  warning  'brandingInput' is assigned a value but never used  @typescript-eslint/no-unused-vars
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\stores\[id]\builder.tsx
    8:10  warning  'Card' is defined but never used            @typescript-eslint/no-unused-vars
@@ -259,67 +255,31 @@ C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\actions\
   7:55  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\bookings.ts
-   22:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-   42:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-   47:81   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-   58:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-   72:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-   89:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  103:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  119:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  124:171  error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  148:43   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  184:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  191:17   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  192:19   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  198:24   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  215:50   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  304:29   error  'bStartMin' is never reassigned. Use 'const' instead  prefer-const
-  305:29   error  'bEndMin' is never reassigned. Use 'const' instead    prefer-const
-  344:28   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  345:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  378:28   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  379:25   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
-  392:24   error  Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
+  192:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\menu.ts
-    5:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-   15:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-   31:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-   48:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-   62:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-   77:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-   93:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  109:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  123:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-
-C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\organizations.ts
-   2:24  warning  'OrganizationMember' is defined but never used  @typescript-eslint/no-unused-vars
-   5:64  error    Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
-  17:29  error    Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
-  20:75  error    Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
-  55:58  error    Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
-  67:89  error    Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+    5:5   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+   17:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   33:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   50:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   64:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   79:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   95:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+  111:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+  125:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\payment.ts
   40:30  warning  '_intentId' is defined but never used  @typescript-eslint/no-unused-vars
 
-C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\staff.ts
-   28:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-   65:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  102:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  116:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\stores.ts
-   7:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  33:76  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  49:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  62:91  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  91:79  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   9:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  50:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  63:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  92:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\tickets.ts
-    7:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  153:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  8:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\store\useBookingStore.ts
   67:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
@@ -330,6 +290,6 @@ C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\test-store.ts
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\test_update.js
   1:198  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
 
-笨・213 problems (100 errors, 113 warnings)
-  3 errors and 0 warnings potentially fixable with the `--fix` option.
+笨・177 problems (64 errors, 113 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
 

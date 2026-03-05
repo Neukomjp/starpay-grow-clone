@@ -1,11 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
 import { customerService } from '@/lib/services/customers'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import Link from 'next/link'
-import { Search, UserPlus } from 'lucide-react'
+import { UserPlus } from 'lucide-react'
 import { cookies } from 'next/headers'
+import { canViewCustomers } from '@/lib/rbac'
 
 import { CustomerSearch } from './customer-search'
 
@@ -42,6 +43,29 @@ export default async function CustomersPage(props: Props) {
     } else {
         storeId = null
     }
+
+    // Role check logic
+    let hasAccess = false
+    if (orgId) {
+        const { getUserOrganizationsAction } = await import('@/lib/actions/organization')
+        const orgs = await getUserOrganizationsAction()
+        const currentOrg = orgs.find(o => o.id === orgId) || orgs[0]
+        hasAccess = currentOrg ? canViewCustomers(currentOrg.role as any) : false
+    } else {
+        hasAccess = true
+    }
+
+    if (!hasAccess) {
+        return (
+            <div className="space-y-6">
+                <div className="p-8 text-center bg-gray-50 rounded-lg border border-gray-200 mt-6">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">アクセス権限がありません</h3>
+                    <p className="text-gray-500">顧客管理ページを表示する権限がありません。管理者にお問い合わせください。</p>
+                </div>
+            </div>
+        )
+    }
+
 
     const customers = storeId ? await customerService.getCustomers(storeId, query) : []
 

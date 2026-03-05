@@ -1,30 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { getBookingsByCustomerIdAction } from '@/lib/actions/booking'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
-import { Calendar, Clock, LogOut, User } from 'lucide-react'
+import { Calendar as CalendarIcon, Clock, LogOut, User } from 'lucide-react'
 
 import { getCurrentCustomerAction, logoutCustomerAction } from '@/lib/actions/auth'
 import { getCustomerTicketsByAuthUserIdAction } from '@/lib/actions/tickets'
 import { getBookingsByAuthUserIdAction } from '@/lib/actions/booking'
-import { getStoreByIdAction } from '@/lib/actions/store'
 
 export default function MyPage() {
     const router = useRouter()
     const [loading, setLoading] = useState(true)
-    const [user, setUser] = useState<any>(null)
+     
     const [bookings, setBookings] = useState<any[]>([])
+     
     const [tickets, setTickets] = useState<any[]>([])
-    const [store, setStore] = useState<any>(null)
 
     useEffect(() => {
         checkUser()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     async function checkUser() {
@@ -35,8 +34,6 @@ export default function MyPage() {
             return
         }
 
-        setUser(authUser)
-
         // Parallel fetch using auth_user_id
         const [bookingsData, ticketsData] = await Promise.all([
             getBookingsByAuthUserIdAction(authUser.id),
@@ -45,7 +42,6 @@ export default function MyPage() {
 
         setBookings(bookingsData || [])
         setTickets(ticketsData || [])
-        setStore(null) // Mypage doesn't belong to a single store anymore
         setLoading(false)
     }
 
@@ -71,15 +67,10 @@ export default function MyPage() {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold">マイページ</h1>
-                            <p className="text-gray-500">{user?.email}</p>
+                            <p className="text-gray-500">{ }</p>
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        {store && (
-                            <Button onClick={() => router.push(`/store/${store.slug}`)}>
-                                新規予約
-                            </Button>
-                        )}
                         <Button variant="outline" onClick={handleLogout}>
                             <LogOut className="mr-2 h-4 w-4" /> ログアウト
                         </Button>
@@ -119,7 +110,7 @@ export default function MyPage() {
                     {bookings.length === 0 ? (
                         <Card>
                             <CardContent className="flex flex-col items-center justify-center py-12 text-gray-500">
-                                <Calendar className="h-12 w-12 mb-4 opacity-50" />
+                                <CalendarIcon className="h-12 w-12 mb-4 opacity-50" />
                                 <p>予約履歴はありません</p>
                                 <Button className="mt-4" onClick={() => router.push('/')}>店舗を探す</Button>
                             </CardContent>

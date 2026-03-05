@@ -1,6 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { useCurrentOrganization } from '@/hooks/use-current-organization'
+import { canViewPayments } from '@/lib/rbac'
+import { Loader2 } from 'lucide-react'
 
 // Mock Data
 const transactions = [
@@ -10,6 +13,25 @@ const transactions = [
 ]
 
 export default function PaymentsPage() {
+    const { organization, loading: orgLoading } = useCurrentOrganization()
+
+    if (orgLoading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            </div>
+        )
+    }
+
+    if (organization && !canViewPayments(organization.role)) {
+        return (
+            <div className="p-8 text-center bg-gray-50 rounded-lg border border-gray-200 mt-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">アクセス権限がありません</h3>
+                <p className="text-gray-500">決済・売上ページを表示する権限がありません。管理者にお問い合わせください。</p>
+            </div>
+        )
+    }
+
     return (
         <div className="space-y-6">
             <h2 className="text-3xl font-bold tracking-tight">決済・売上</h2>

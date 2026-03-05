@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -17,6 +17,7 @@ import { Loader2, Pencil, Trash2, XCircle, CheckCircle2 } from 'lucide-react'
 import { ja } from 'date-fns/locale'
 
 interface EditBookingDialogProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     booking: any
     storeId: string
     trigger?: React.ReactNode
@@ -50,6 +51,7 @@ export function EditBookingDialog({ booking, storeId, trigger, onOpenChange }: E
             loadData()
             initializeForm()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, booking])
 
     function initializeForm() {
@@ -90,11 +92,12 @@ export function EditBookingDialog({ booking, storeId, trigger, onOpenChange }: E
 
                 // Match existing options
                 if (booking.options && Array.isArray(booking.options)) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const matchedIds = opts.filter(o => booking.options.some((bo: any) => bo.name === o.name)).map(o => o.id)
                     setSelectedOptionIds(matchedIds)
                 }
             }
-        } catch (error) {
+        } catch {
             toast.error('Failed to load data')
         }
     }
@@ -105,6 +108,7 @@ export function EditBookingDialog({ booking, storeId, trigger, onOpenChange }: E
             // Only reload if changed from initial
             loadOptions(selectedServiceId)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedServiceId])
 
     async function loadOptions(serviceId: string) {
@@ -148,6 +152,7 @@ export function EditBookingDialog({ booking, storeId, trigger, onOpenChange }: E
         if (step === 2 && date) {
             loadSlots()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [step, date, selectedStaff, selectedServiceId, selectedOptionIds, services, currentServiceOptions])
 
 

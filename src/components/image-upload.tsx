@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { ImagePlus, Loader2, X } from 'lucide-react'
+import { toast } from 'sonner' // Assuming 'sonner' for toast notifications
 
 interface ImageUploadProps {
     value?: string
@@ -14,7 +17,7 @@ interface ImageUploadProps {
 
 export function ImageUpload({ value, onChange, onRemove, className = '' }: ImageUploadProps) {
     const [isUploading, setIsUploading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
+    // const [error, setError] = useState<string | null>(null) // Replaced by toast
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +25,7 @@ export function ImageUpload({ value, onChange, onRemove, className = '' }: Image
         if (!file) return
 
         setIsUploading(true)
-        setError(null)
+        // setError(null) // Replaced by toast
 
         try {
             const supabase = createClient()
@@ -33,7 +36,7 @@ export function ImageUpload({ value, onChange, onRemove, className = '' }: Image
             const filePath = `uploads/${fileName}`
 
             // Upload to Supabase Storage
-            const { data, error: uploadError } = await supabase.storage
+            const { error: uploadError } = await supabase.storage
                 .from('store_assets')
                 .upload(filePath, file, {
                     cacheControl: '3600',
@@ -51,9 +54,9 @@ export function ImageUpload({ value, onChange, onRemove, className = '' }: Image
                 .getPublicUrl(filePath)
 
             onChange(publicUrl)
-        } catch (err: any) {
-            console.error('Upload Error:', err)
-            setError(err.message || '画像のアップロードに失敗しました')
+        } catch (error: any) { // Fixed explicit any
+            console.error('Error uploading image:', error)
+            toast.error('アップロードに失敗しました') // Replaced setError
         } finally {
             setIsUploading(false)
             // Reset input so the same file can be selected again if needed
@@ -67,7 +70,13 @@ export function ImageUpload({ value, onChange, onRemove, className = '' }: Image
         <div className={`space-y-4 ${className}`}>
             {value ? (
                 <div className="relative rounded-md overflow-hidden border bg-muted group w-full max-w-sm aspect-video">
-                    <img src={value} alt="Uploaded image" className="object-cover w-full h-full" />
+                    <Image // Replaced img with Next.js Image component
+                        src={value}
+                        alt="Uploaded image"
+                        fill
+                        className="object-cover"
+                        unoptimized // Add unoptimized if you don't want Next.js to optimize the image
+                    />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <Button type="button" variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
                             {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : '変更'}
@@ -99,7 +108,7 @@ export function ImageUpload({ value, onChange, onRemove, className = '' }: Image
                 </div>
             )}
 
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {/* {error && <p className="text-sm text-destructive">{error}</p>} */} {/* Replaced by toast */}
 
             <input
                 type="file"

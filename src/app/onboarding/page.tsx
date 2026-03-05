@@ -27,10 +27,11 @@ export default function OnboardingPage() {
             toast.success('組織を作成しました！')
             // Organization action automatically sets the cookie context and auth redirects back to dashboard.
             // Let's force a hard navigation or router refresh to hit middleware again.
+            toast.success('ダッシュボードへ移動します...')
             router.push('/dashboard')
-            router.refresh()
-        } catch (error: any) {
-            toast.error(error.message || '組織の作成に失敗しました')
+        } catch {
+            toast.error('保存に失敗しました。もう一度お試しください。')
+        } finally {
             setLoading(false)
         }
     }

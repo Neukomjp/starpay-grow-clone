@@ -1,16 +1,42 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Plus, Ticket, Power, PowerOff } from 'lucide-react'
+import { Plus, Ticket } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { getCouponsAction, toggleCouponStatusAction } from '@/lib/actions/coupon'
+import { getCouponsAction } from '@/lib/actions/coupon'
 import { getStoresAction } from '@/lib/actions/store'
 import { CouponToggle } from './coupon-toggle'
+import { cookies } from 'next/headers'
+import { canViewCoupons } from '@/lib/rbac'
 
 export default async function CouponsPage() {
-    // In real app, get current store
     const stores = await getStoresAction()
     const storeId = stores.length > 0 ? stores[0].id : ''
+
+    const cookieStore = await cookies()
+    const orgId = cookieStore.get('organization-id')?.value
+
+    let hasAccess = false
+    if (orgId) {
+        const { getUserOrganizationsAction } = await import('@/lib/actions/organization')
+        const orgs = await getUserOrganizationsAction()
+        const currentOrg = orgs.find(o => o.id === orgId) || orgs[0]
+        hasAccess = currentOrg ? canViewCoupons(currentOrg.role as any) : false
+    } else {
+        // Fallback or demo
+        hasAccess = true;
+    }
+
+    if (!hasAccess) {
+        return (
+            <div className="space-y-6">
+                <div className="p-8 text-center bg-gray-50 rounded-lg border border-gray-200 mt-6">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">アクセス権限がありません</h3>
+                    <p className="text-gray-500">クーポン管理ページを表示する権限がありません。管理者にお問い合わせください。</p>
+                </div>
+            </div>
+        )
+    }
 
     const coupons = storeId ? await getCouponsAction(storeId) : []
 

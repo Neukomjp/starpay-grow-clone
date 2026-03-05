@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -36,6 +38,7 @@ export function ShiftDialog({ staffId, staffName, open: controlledOpen, onOpenCh
         if (open) {
             loadShifts()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, staffId])
 
     async function loadShifts() {

@@ -22,7 +22,7 @@ export function OrganizationSettings() {
     const handleSave = async () => {
         try {
             const domainInput = document.getElementById('custom-domain-input') as HTMLInputElement
-            const brandingInput = document.getElementById('remove-branding') as HTMLButtonElement // Checkbox is button in radix/shadcn usually, but let's check input type
+            // Checkbox is button in radix/shadcn usually, but let's check input type
             // Actually Shadcn Checkbox is a bit complex to get ref from ID directly if not controlled.
             // Better to use state or refs. For speed/simplicity in this edit, I will assume controlled or simple ID access if native input.
             // BUT Shadcn Checkbox is NOT a native input. It is a button.

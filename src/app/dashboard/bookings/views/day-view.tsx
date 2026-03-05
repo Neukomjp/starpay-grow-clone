@@ -8,7 +8,6 @@ import { EditBookingDialog } from '../edit-booking-dialog'
 import { VisitRecordDialog } from '@/components/visit-record-dialog'
 import { FileText } from 'lucide-react'
 import { ja } from 'date-fns/locale'
-import { Staff } from '@/types/staff'
 import { Booking } from '@/types/booking'
 import { format, differenceInMinutes, getHours, getMinutes } from 'date-fns'
 
@@ -17,10 +16,9 @@ interface DayViewProps {
     setDate: (date: Date | undefined) => void
     bookings: Booking[]
     storeId: string
-    onStatusUpdate: (bookingId: string, status: 'confirmed' | 'cancelled') => Promise<void>
 }
 
-export function DayView({ date, setDate, bookings, storeId, onStatusUpdate }: DayViewProps) {
+export function DayView({ date, setDate, bookings, storeId }: DayViewProps) {
     const dailyBookings = bookings.filter(b => {
         const bookingDate = new Date(b.start_time)
         return date &&
@@ -121,6 +119,7 @@ export function DayView({ date, setDate, bookings, storeId, onStatusUpdate }: Da
                                                 </div>
                                                 <div className="text-muted-foreground mt-0.5 text-xs truncate">
                                                     {booking.service?.name || 'Service Unspecified'}
+                                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                                     {booking.options && booking.options.length > 0 && ` (+${booking.options.map((o: any) => o.name).join(', ')})`}
                                                 </div>
                                                 <div className="text-xs text-muted-foreground mt-0.5">

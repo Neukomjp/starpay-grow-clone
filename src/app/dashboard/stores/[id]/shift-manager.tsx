@@ -1,17 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { staffService } from '@/lib/services/staff'
 import { Shift, ShiftException } from '@/lib/types/shift'
 import { getShiftsByStoreIdAction, getShiftExceptionsByStoreIdAction } from '@/lib/actions/shift'
 import { Staff } from '@/types/staff'
-import { Clock, Edit, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Edit, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { ShiftDialog } from './shift-dialog'
 import { ShiftExceptionDialog } from './shift-exception-dialog'
 import { toast } from 'sonner'
@@ -45,6 +45,7 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
         if (storeId) {
             loadData()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [storeId, currentMonthDate])
 
     async function loadData() {
@@ -128,7 +129,7 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                     <p className="text-sm text-gray-500">スタッフごとの週間シフトを設定します。</p>
                 </div>
                 <Button variant="outline" onClick={loadData} size="sm">
-                    <Loader2 className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                    <Loader2 className={`mr - 2 h - 4 w - 4 ${loading ? 'animate-spin' : ''} `} />
                     更新
                 </Button>
             </div>
@@ -177,7 +178,7 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                                         <TableRow>
                                             <TableHead className="w-[150px]">スタッフ</TableHead>
                                             {DAYS_OF_WEEK.map((day, i) => (
-                                                <TableHead key={i} className={`text-center ${i === 0 ? 'text-red-500' : i === 6 ? 'text-blue-500' : ''}`}>
+                                                <TableHead key={i} className={`text - center ${i === 0 ? 'text-red-500' : i === 6 ? 'text-blue-500' : ''} `}>
                                                     {day}
                                                 </TableHead>
                                             ))}
@@ -256,7 +257,7 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                                 <div className="border rounded-md">
                                     <div className="grid grid-cols-7 border-b bg-muted/50">
                                         {['日', '月', '火', '水', '木', '金', '土'].map((day, i) => (
-                                            <div key={day} className={`p-2 text-center text-sm font-medium ${i === 0 ? 'text-red-500' : i === 6 ? 'text-blue-500' : ''}`}>
+                                            <div key={day} className={`p - 2 text - center text - sm font - medium ${i === 0 ? 'text-red-500' : i === 6 ? 'text-blue-500' : ''} `}>
                                                 {day}
                                             </div>
                                         ))}
@@ -286,13 +287,13 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                                                 <div
                                                     key={day.toISOString()}
                                                     onClick={() => !isAllStaff && isCurrentMonth && handleDayClick(day)}
-                                                    className={`min-h-[100px] border-b border-r p-2 flex flex-col gap-1 transition-colors
+                                                    className={`min - h - [100px] border - b border - r p - 2 flex flex - col gap - 1 transition - colors
                                                         ${isCurrentMonth ? (isAllStaff ? 'bg-white' : 'bg-white cursor-pointer hover:bg-stone-50') : 'bg-stone-50 text-gray-400'}
                                                         ${i % 7 === 6 ? 'border-r-0' : ''}
-                                                    `}
+`}
                                                 >
                                                     <div className="flex justify-between items-start">
-                                                        <span className={`text-sm ${isToday ? 'bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center' : ''} ${dayOfWeek === 0 ? 'text-red-500' : dayOfWeek === 6 ? 'text-blue-500' : ''}`}>
+                                                        <span className={`text - sm ${isToday ? 'bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center' : ''} ${dayOfWeek === 0 ? 'text-red-500' : dayOfWeek === 6 ? 'text-blue-500' : ''} `}>
                                                             {format(day, 'd')}
                                                         </span>
                                                         {!isAllStaff && singleStaffException && isCurrentMonth && (
@@ -313,12 +314,12 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
 
                                                                         return (
                                                                             <div key={staff.id} className="text-xs flex items-center gap-1">
-                                                                                <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${isHoliday ? 'bg-gray-300' : exception ? 'bg-amber-500' : 'bg-green-500'}`} />
+                                                                                <div className={`w - 1.5 h - 1.5 rounded - full shrink - 0 ${isHoliday ? 'bg-gray-300' : exception ? 'bg-amber-500' : 'bg-green-500'} `} />
                                                                                 <span className="truncate w-10 shrink-0 font-medium" title={staff.name}>{staff.name.slice(0, 3)}</span>
                                                                                 {isHoliday ? (
                                                                                     <span className="text-gray-400 text-[10px]">休</span>
                                                                                 ) : (
-                                                                                    <span className={`${exception ? 'text-amber-700' : 'text-green-700'} text-[10px]`}>
+                                                                                    <span className={`${exception ? 'text-amber-700' : 'text-green-700'} text - [10px]`}>
                                                                                         {effectiveShift?.start_time?.slice(0, 5)}-{effectiveShift?.end_time?.slice(0, 5)}
                                                                                     </span>
                                                                                 )}
@@ -329,11 +330,11 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                                                             ) : (
                                                                 // --- SINGLE STAFF VIEW ---
                                                                 singleIsHoliday ? (
-                                                                    <div className={`text-xs py-1 px-1.5 rounded text-center ${singleStaffException ? 'bg-rose-100 text-rose-700 font-medium' : 'text-gray-400'}`}>
+                                                                    <div className={`text - xs py - 1 px - 1.5 rounded text - center ${singleStaffException ? 'bg-rose-100 text-rose-700 font-medium' : 'text-gray-400'} `}>
                                                                         休
                                                                     </div>
                                                                 ) : (
-                                                                    <div className={`text-xs py-1 px-1.5 rounded flex flex-col ${singleStaffException ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-green-50 text-green-700'}`}>
+                                                                    <div className={`text - xs py - 1 px - 1.5 rounded flex flex - col ${singleStaffException ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-green-50 text-green-700'} `}>
                                                                         <div className="font-medium">
                                                                             {(singleStaffException || singleStaffShift)?.start_time?.slice(0, 5)}-{(singleStaffException || singleStaffShift)?.end_time?.slice(0, 5)}
                                                                         </div>

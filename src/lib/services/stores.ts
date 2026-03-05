@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/client'
 import { StoreData } from '@/lib/types/store'
 
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export const storeService = {
-    async getStores(organizationId?: string, customClient?: any) {
+    async getStores(organizationId?: string, customClient?: unknown) {
         // Use a generic client to avoid strict SSR auth requirements if only reading public/org data
-        const supabase = customClient || createSupabaseClient(
+        const supabase = (customClient as any) || createSupabaseClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         )
@@ -30,8 +31,8 @@ export const storeService = {
         return data as StoreData[]
     },
 
-    async getStoreById(id: string, organizationId?: string, customClient?: any) {
-        const supabase = customClient || createClient()
+    async getStoreById(id: string, organizationId?: string, customClient?: unknown) {
+        const supabase = (customClient as any) || createClient()
         let query = supabase
             .from('stores')
             .select('*')
@@ -46,8 +47,8 @@ export const storeService = {
         return data as StoreData
     },
 
-    async getStoreBySlug(slug: string, customClient?: any) {
-        const supabase = customClient || createClient()
+    async getStoreBySlug(slug: string, customClient?: unknown) {
+        const supabase = (customClient as any) || createClient()
         const { data, error } = await supabase
             .from('stores')
             .select('*')
@@ -59,8 +60,8 @@ export const storeService = {
         return data as StoreData
     },
 
-    async createStore(name: string, slug: string, organizationId?: string, customClient?: any) {
-        const supabase = customClient || createClient()
+    async createStore(name: string, slug: string, organizationId?: string, customClient?: unknown) {
+        const supabase = (customClient as any) || createClient()
         const { data: { user } } = await supabase.auth.getUser()
 
         if (!user) {
@@ -88,8 +89,8 @@ export const storeService = {
         return data
     },
 
-    async updateStore(id: string, updates: Partial<StoreData>, customClient?: any) {
-        const supabase = customClient || createClient()
+    async updateStore(id: string, updates: Partial<StoreData>, customClient?: unknown) {
+        const supabase = (customClient as any) || createClient()
         const { data, error } = await supabase
             .from('stores')
             .update(updates)

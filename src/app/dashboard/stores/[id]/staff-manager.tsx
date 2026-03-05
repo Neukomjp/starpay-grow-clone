@@ -38,6 +38,7 @@ export function StaffManager({ storeId }: StaffManagerProps) {
     useEffect(() => {
         loadStaff()
         loadServices()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [storeId])
 
     useEffect(() => {

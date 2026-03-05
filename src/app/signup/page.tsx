@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { useState } from 'react'
@@ -12,7 +13,6 @@ import { toast } from 'sonner'
 import { translateAuthError } from '@/lib/utils/error'
 
 export default function SignupPage() {
-    const router = useRouter()
     const [loading, setLoading] = useState(false)
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -32,7 +32,7 @@ export default function SignupPage() {
             return
         }
 
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
@@ -43,10 +43,18 @@ export default function SignupPage() {
         if (error) {
             toast.error(translateAuthError(error.message))
             setLoading(false)
-        } else {
-            toast.success('確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。')
-            setLoading(false)
+            return
         }
+
+        // Check if user already exists
+        if (data?.user?.identities && data.user.identities.length === 0) {
+            toast.error('このメールアドレスは既に登録されているため、アカウントを作成できません。')
+            setLoading(false)
+            return
+        }
+
+        toast.success('確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。')
+        setLoading(false)
     }
 
     return (

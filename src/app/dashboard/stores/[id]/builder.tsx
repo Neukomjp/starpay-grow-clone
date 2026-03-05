@@ -5,10 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { toast } from 'sonner'
 import { StoreData } from '@/lib/types/store'
 import { updateStoreAction } from '@/lib/actions/store'
@@ -23,6 +21,7 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
     const [loading, setLoading] = useState(false)
 
     // Parse existing theme_config
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const existingConfig = store.theme_config as any || {}
 
     const [designConfig, setDesignConfig] = useState({

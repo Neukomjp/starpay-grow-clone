@@ -9,6 +9,7 @@ export async function POST(request: Request) {
         let htmlContent = ''
 
         // Try to fetch store config if storeId is provided
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let emailConfig: any = null
         let fromName: string | undefined = undefined
         let fromEmail: string | undefined = undefined

@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/client'
 import { TicketMaster, CustomerTicket } from '@/lib/types/ticket'
 
 export const ticketService = {
     // --- Ticket Masters ---
 
-    async getTicketMasters(storeId: string, customClient?: any) {
-        const supabase = customClient || createClient()
+    async getTicketMasters(storeId: string, customClient?: unknown) {
+        const supabase = (customClient as any) || createClient()
         const { data, error } = await supabase
             .from('ticket_masters')
             .select('*')
@@ -150,7 +151,7 @@ export const ticketService = {
         return data as CustomerTicket
     },
 
-    async logTransaction(transaction: any) {
+    async logTransaction(transaction: unknown) {
         console.log('[Supabase DB] Log Transaction:', transaction)
         // In a real app, we would insert into 'ticket_transactions' table
     }

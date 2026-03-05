@@ -18,7 +18,7 @@ export function SalesChart({ data }: SalesChartProps) {
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(value) => {
+                    tickFormatter={(value: string) => { // Explicitly type 'value' as string
                         const date = new Date(value + '-01')
                         return `${date.getMonth() + 1}月`
                     }}
@@ -33,6 +33,7 @@ export function SalesChart({ data }: SalesChartProps) {
                 <Tooltip
                     cursor={{ fill: 'rgba(0,0,0,0.05)' }}
                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     formatter={(value: any) => [`¥${(value || 0).toLocaleString()}`, '売上']}
                     labelFormatter={(label) => `${label}の売上`}
                 />

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand'
 import { Booking } from '@/types/booking'
 import { bookingService } from '@/lib/services/bookings'

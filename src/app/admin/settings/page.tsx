@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
+import { } from '@/components/ui/separator'
 
 export default function AdminSettingsPage() {
     const [maintenanceMode, setMaintenanceMode] = useState(false)

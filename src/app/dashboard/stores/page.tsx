@@ -9,7 +9,7 @@ import { getStoresAction } from '@/lib/actions/store'
 import { StoreData } from '@/lib/types/store'
 import { toast } from 'sonner'
 import { useCurrentOrganization } from '@/hooks/use-current-organization'
-import { canCreateStore } from '@/lib/rbac'
+import { canCreateStore, canViewStores } from '@/lib/rbac'
 
 export default function StoresPage() {
     const [stores, setStores] = useState<StoreData[]>([])
@@ -29,9 +29,10 @@ export default function StoresPage() {
         try {
             const data = await getStoresAction()
             setStores(data || [])
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to fetch stores:', error)
-            toast.error(`店舗の取得に失敗しました: ${error.message || 'Unknown error'}`)
+            toast.error(`店舗の取得に失敗しました: ${(error as Error).message || 'Unknown error'}`)
+            setStores([]) // Clear stores on error
         } finally {
             setLoading(false)
         }
@@ -41,6 +42,15 @@ export default function StoresPage() {
         return (
             <div className="flex justify-center items-center h-64">
                 <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            </div>
+        )
+    }
+
+    if (organization && !canViewStores(organization.role)) {
+        return (
+            <div className="p-8 text-center bg-gray-50 rounded-lg border border-gray-200 mt-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">アクセス権限がありません</h3>
+                <p className="text-gray-500">店舗管理ページを表示する権限がありません。管理者にお問い合わせください。</p>
             </div>
         )
     }

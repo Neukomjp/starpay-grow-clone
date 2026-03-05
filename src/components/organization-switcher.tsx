@@ -11,7 +11,7 @@ import {
 import { Organization } from '@/lib/types/organization'
 import { Building2, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -28,6 +28,7 @@ export function OrganizationSwitcher({ currentOrgId }: { currentOrgId?: string }
 
     useEffect(() => {
         loadOrgs()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const loadOrgs = async () => {

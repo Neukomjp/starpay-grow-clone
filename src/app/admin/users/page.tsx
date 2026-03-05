@@ -39,6 +39,7 @@ export default async function AdminUsersPage() {
                                 </TableCell>
                             </TableRow>
                         ) : (
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             users.map((user: any) => (
                                 <TableRow key={user.id}>
                                     <TableCell className="font-medium">

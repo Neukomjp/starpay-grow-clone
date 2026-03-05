@@ -5,7 +5,6 @@ import {
     Store,
     Calendar,
     Settings,
-    LogOut,
     CreditCard,
     Users,
     Ticket,
@@ -18,6 +17,7 @@ import { LogoutButton } from '@/components/logout-button'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getUserOrganizationsAction } from '@/lib/actions/organization'
+import { canViewStores, canViewCustomers, canViewCoupons, canViewPayments, canManageSettings } from '@/lib/rbac'
 
 export default async function DashboardLayout({
     children,
@@ -31,6 +31,10 @@ export default async function DashboardLayout({
     }
 
     const orgId = (await cookies()).get('organization-id')?.value || orgs[0]?.id
+
+    // Find current org to get role
+    const currentOrg = orgs.find(o => o.id === orgId) || orgs[0]
+    const role = currentOrg?.role || 'member'
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -47,31 +51,46 @@ export default async function DashboardLayout({
                         <LayoutDashboard className="mr-3 h-5 w-5" />
                         ダッシュボード
                     </Link>
-                    <Link href="/dashboard/stores" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <Store className="mr-3 h-5 w-5" />
-                        店舗管理
-                    </Link>
+
+                    {canViewStores(role as any) && (
+                        <Link href="/dashboard/stores" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                            <Store className="mr-3 h-5 w-5" />
+                            店舗管理
+                        </Link>
+                    )}
+
                     <Link href="/dashboard/bookings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
                         <Calendar className="mr-3 h-5 w-5" />
                         予約管理
                     </Link>
-                    <Link href="/dashboard/customers" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <Users className="mr-3 h-5 w-5" />
-                        顧客管理
-                    </Link>
-                    <Link href="/dashboard/coupons" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <Ticket className="mr-3 h-5 w-5" />
-                        クーポン管理
-                    </Link>
 
-                    <Link href="/dashboard/payments" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <CreditCard className="mr-3 h-5 w-5" />
-                        決済・売上
-                    </Link>
-                    <Link href="/dashboard/settings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <Settings className="mr-3 h-5 w-5" />
-                        設定
-                    </Link>
+                    {canViewCustomers(role as any) && (
+                        <Link href="/dashboard/customers" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                            <Users className="mr-3 h-5 w-5" />
+                            顧客管理
+                        </Link>
+                    )}
+
+                    {canViewCoupons(role as any) && (
+                        <Link href="/dashboard/coupons" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                            <Ticket className="mr-3 h-5 w-5" />
+                            クーポン管理
+                        </Link>
+                    )}
+
+                    {canViewPayments(role as any) && (
+                        <Link href="/dashboard/payments" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                            <CreditCard className="mr-3 h-5 w-5" />
+                            決済・売上
+                        </Link>
+                    )}
+
+                    {canManageSettings(role as any) && (
+                        <Link href="/dashboard/settings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                            <Settings className="mr-3 h-5 w-5" />
+                            設定
+                        </Link>
+                    )}
                 </nav>
                 <div className="p-4 border-t">
                     <LogoutButton />
@@ -107,42 +126,58 @@ export default async function DashboardLayout({
                                         ダッシュボード
                                     </Link>
                                 </SheetClose>
-                                <SheetClose asChild>
-                                    <Link href="/dashboard/stores" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                                        <Store className="mr-3 h-5 w-5" />
-                                        店舗管理
-                                    </Link>
-                                </SheetClose>
+
+                                {canViewStores(role as any) && (
+                                    <SheetClose asChild>
+                                        <Link href="/dashboard/stores" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <Store className="mr-3 h-5 w-5" />
+                                            店舗管理
+                                        </Link>
+                                    </SheetClose>
+                                )}
+
                                 <SheetClose asChild>
                                     <Link href="/dashboard/bookings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
                                         <Calendar className="mr-3 h-5 w-5" />
                                         予約管理
                                     </Link>
                                 </SheetClose>
-                                <SheetClose asChild>
-                                    <Link href="/dashboard/customers" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                                        <Users className="mr-3 h-5 w-5" />
-                                        顧客管理
-                                    </Link>
-                                </SheetClose>
-                                <SheetClose asChild>
-                                    <Link href="/dashboard/coupons" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                                        <Ticket className="mr-3 h-5 w-5" />
-                                        クーポン管理
-                                    </Link>
-                                </SheetClose>
-                                <SheetClose asChild>
-                                    <Link href="/dashboard/payments" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                                        <CreditCard className="mr-3 h-5 w-5" />
-                                        決済・売上
-                                    </Link>
-                                </SheetClose>
-                                <SheetClose asChild>
-                                    <Link href="/dashboard/settings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                                        <Settings className="mr-3 h-5 w-5" />
-                                        設定
-                                    </Link>
-                                </SheetClose>
+
+                                {canViewCustomers(role as any) && (
+                                    <SheetClose asChild>
+                                        <Link href="/dashboard/customers" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <Users className="mr-3 h-5 w-5" />
+                                            顧客管理
+                                        </Link>
+                                    </SheetClose>
+                                )}
+
+                                {canViewCoupons(role as any) && (
+                                    <SheetClose asChild>
+                                        <Link href="/dashboard/coupons" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <Ticket className="mr-3 h-5 w-5" />
+                                            クーポン管理
+                                        </Link>
+                                    </SheetClose>
+                                )}
+
+                                {canViewPayments(role as any) && (
+                                    <SheetClose asChild>
+                                        <Link href="/dashboard/payments" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <CreditCard className="mr-3 h-5 w-5" />
+                                            決済・売上
+                                        </Link>
+                                    </SheetClose>
+                                )}
+
+                                {canManageSettings(role as any) && (
+                                    <SheetClose asChild>
+                                        <Link href="/dashboard/settings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                                            <Settings className="mr-3 h-5 w-5" />
+                                            設定
+                                        </Link>
+                                    </SheetClose>
+                                )}
                             </nav>
                             <div className="p-4 border-t mt-auto">
                                 <LogoutButton />

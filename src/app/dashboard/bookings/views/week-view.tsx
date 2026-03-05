@@ -1,8 +1,6 @@
-
 'use client'
 
-import { useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { EditBookingDialog } from '../edit-booking-dialog'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -15,10 +13,9 @@ interface WeekViewProps {
     setDate: (date: Date) => void
     bookings: Booking[]
     storeId: string
-    onStatusUpdate: (bookingId: string, status: 'confirmed' | 'cancelled') => Promise<void>
 }
 
-export function WeekView({ date, setDate, bookings, storeId, onStatusUpdate }: WeekViewProps) {
+export function WeekView({ date, setDate, bookings, storeId }: WeekViewProps) {
     const weekStart = startOfWeek(date, { weekStartsOn: 1 }) // Monday start
     const weekEnd = endOfWeek(date, { weekStartsOn: 1 })
     const days = eachDayOfInterval({ start: weekStart, end: weekEnd })
@@ -26,15 +23,9 @@ export function WeekView({ date, setDate, bookings, storeId, onStatusUpdate }: W
     // Time range: 9:00 - 22:00 (13 hours)
     const startHour = 9
     const endHour = 22
-    const totalMinutes = (endHour - startHour) * 60
 
     const nextWeek = () => setDate(addDays(date, 7))
     const prevWeek = () => setDate(addDays(date, -7))
-
-    const handleBookingClick = (bookingId: string) => {
-        // Maybe open edit dialog directly?
-        // For now, let's just use the EditBookingDialog as the block itself or wrap it
-    }
 
     // fixed height per hour in pixels
     const HOUR_HEIGHT = 60
@@ -52,21 +43,21 @@ export function WeekView({ date, setDate, bookings, storeId, onStatusUpdate }: W
     }
 
     return (
-        <Card className="h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center justify-between py-4">
+        <div className="h-full flex flex-col bg-white rounded-xl shadow-sm border border-slate-200">
+            <div className="flex flex-row items-center justify-between py-4 px-6 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                     <Button variant="outline" size="icon" onClick={prevWeek}>
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <CardTitle>
+                    <h3 className="text-lg font-semibold text-slate-900">
                         {format(weekStart, 'yyyy年 M月 d日', { locale: ja })} - {format(weekEnd, 'M月 d日', { locale: ja })}
-                    </CardTitle>
+                    </h3>
                     <Button variant="outline" size="icon" onClick={nextWeek}>
                         <ChevronRight className="h-4 w-4" />
                     </Button>
                 </div>
-            </CardHeader>
-            <CardContent className="flex-1 overflow-auto min-h-[600px] p-0">
+            </div>
+            <div className="flex-1 overflow-auto min-h-[600px] p-0">
                 <div className="flex flex-col h-full min-w-[800px]">
                     {/* Header: Days */}
                     <div className="flex border-b">
@@ -143,7 +134,7 @@ export function WeekView({ date, setDate, bookings, storeId, onStatusUpdate }: W
                         })}
                     </div>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     )
 }

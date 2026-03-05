@@ -7,7 +7,6 @@ import { storeService } from '@/lib/services/stores'
 import { salesService } from '@/lib/services/sales'
 import { bookingService } from '@/lib/services/bookings'
 import { format } from 'date-fns'
-import { ja } from 'date-fns/locale'
 import { Badge } from '@/components/ui/badge'
 
 export const dynamic = 'force-dynamic'
@@ -16,6 +15,7 @@ import { cookies } from 'next/headers'
 
 export default async function DashboardPage() {
     // Fetch data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let stores: any[] = []
 
     const cookieStore = await cookies()
@@ -29,7 +29,7 @@ export default async function DashboardPage() {
     if (orgId) {
         try {
             stores = await storeService.getStores(orgId)
-        } catch (e) {
+        } catch {
             // Using console.log instead of console.error because Turbopack crashes when trying to serialize fetch errors to the dev overlay from Server Components
             console.log('Failed to fetch stores on dashboard, likely due to missing Supabase setup.')
         }
@@ -41,7 +41,9 @@ export default async function DashboardPage() {
         salesGrowth: 0,
         bookingsGrowth: 0
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let monthlySales: any[] = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let todayBookings: any[] = []
 
     if (stores && stores.length > 0) {

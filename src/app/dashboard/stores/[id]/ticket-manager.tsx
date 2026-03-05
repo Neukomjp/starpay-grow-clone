@@ -6,9 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { TicketMaster } from '@/lib/types/ticket'
 import { getTicketMastersAction, createTicketMasterAction, updateTicketMasterAction } from '@/lib/actions/tickets'
 import { toast } from 'sonner'
@@ -35,6 +34,7 @@ export function TicketManager({ storeId }: TicketManagerProps) {
 
     useEffect(() => {
         loadTickets()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [storeId])
 
     const loadTickets = async () => {

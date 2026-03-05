@@ -14,8 +14,7 @@ export const staffService = {
 
             if (error) throw new Error(error.message)
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return (data || []).map((s: any) => ({
+            return (data || []).map((s) => ({
                 id: s.id,
                 storeId: s.store_id,
                 name: s.name,
@@ -25,8 +24,8 @@ export const staffService = {
                 specialties: s.specialties,
                 serviceIds: s.service_ids || []
             })) as Staff[]
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -62,8 +61,8 @@ export const staffService = {
                 specialties: data.specialties,
                 serviceIds: data.service_ids
             } as Staff
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -71,8 +70,7 @@ export const staffService = {
         try {
             const supabase = createClient()
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const dbUpdates: any = {}
+            const dbUpdates: Record<string, unknown> = {}
             if (updates.name) dbUpdates.name = updates.name
             if (updates.role) dbUpdates.role = updates.role
             if (updates.bio !== undefined) dbUpdates.bio = updates.bio
@@ -99,8 +97,8 @@ export const staffService = {
                 specialties: data.specialties,
                 serviceIds: data.service_ids
             } as Staff
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     },
 
@@ -113,8 +111,8 @@ export const staffService = {
                 .eq('id', id)
 
             if (error) throw new Error(error.message)
-        } catch (error: any) {
-            throw new Error(error.message || JSON.stringify(error))
+        } catch (error: unknown) {
+            throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
         }
     }
 }

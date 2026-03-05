@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -11,7 +12,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { CalendarIcon, Loader2, Plus, X } from 'lucide-react'
-import { VisitRecord } from '@/lib/types/visit-record'
 import { createVisitRecordAction } from '@/lib/actions/visit'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'

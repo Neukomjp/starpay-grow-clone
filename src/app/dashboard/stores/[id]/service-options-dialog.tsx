@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -20,22 +20,19 @@ export function ServiceOptionsDialog({ storeId, service }: ServiceOptionsDialogP
     const [loading, setLoading] = useState(false)
 
     const isGlobal = !service
+    const serviceId = service?.id || null // Derived serviceId
     const title = isGlobal ? '全体オプション設定' : `${service.name} - オプション設定`
     const description = isGlobal
         ? '店舗全体のオプション（深夜料金・指名料など）を設定します。'
         : 'このメニューのオプション（トッピングや延長など）を設定します。'
 
-    useEffect(() => {
-        loadOptions()
-    }, [storeId, service?.id])
-
-    async function loadOptions() {
+    const loadOptions = useCallback(async () => {
         try {
             let data: ServiceOption[]
             if (isGlobal) {
                 data = await menuService.getGlobalOptionsByStoreId(storeId)
-            } else if (service?.id) {
-                data = await menuService.getOptionsByServiceId(service.id)
+            } else if (serviceId) {
+                data = await menuService.getOptionsByServiceId(serviceId as string)
             } else {
                 return
             }
@@ -44,7 +41,11 @@ export function ServiceOptionsDialog({ storeId, service }: ServiceOptionsDialogP
             console.error('Failed to load options', error)
             toast.error('オプションの読み込みに失敗しました')
         }
-    }
+    }, [isGlobal, storeId, serviceId])
+
+    useEffect(() => {
+        loadOptions()
+    }, [loadOptions])
 
     const handleAddOption = async () => {
         if (!newOption.name) return

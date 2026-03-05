@@ -50,6 +50,13 @@ export default function CustomerSignupPage() {
             return
         }
 
+        // Check if user already exists
+        if (authData?.user?.identities && authData.user.identities.length === 0) {
+            toast.error('このメールアドレスは既に登録されているため、アカウントを作成できません。')
+            setLoading(false)
+            return
+        }
+
         if (authData.user) {
             // 2. Create Profile
             const { error: profileError } = await supabase

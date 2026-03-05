@@ -3,10 +3,8 @@
 import { useState } from 'react'
 import { WeeklyCalendar } from './weekly-calendar'
 import { BookingForm } from './booking-form'
-import { ja } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { cn } from '@/lib/utils'
 
 interface BookingSectionProps {
     storeId: string
@@ -20,17 +18,7 @@ export function BookingSection({ storeId, storeName, slug, themeColor }: Booking
     const [isOpen, setIsOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
 
-    const handleDateSelect = (date: Date, time?: string) => {
-        setSelectedDate(date)
-        if (time) {
-            // If time is selected, we want to open the form and PRE-SET the time
-            setIsOpen(true)
-            // We need to pass the selected time to BookingForm. 
-            // We can do this by setting initialTime state or passing it as part of initialDate (by setting hours/mins)
-            // or adding a new prop to BookingForm.
-            // Let's modify BookingForm to accept initialTime.
-        }
-    }
+
 
     // We need to track the selected time to pass it
     const [selectedTime, setSelectedTime] = useState<string>('')
@@ -81,9 +69,7 @@ export function BookingSection({ storeId, storeName, slug, themeColor }: Booking
                     <div className="w-full">
                         <WeeklyCalendar
                             storeId={storeId}
-                            selected={selectedDate}
                             onSelect={handleSlotSelect}
-                            themeColor={themeColor}
                         />
                         <p className="text-xs text-center text-gray-400 mt-4">
                             日時（◎）をクリックして予約に進めます

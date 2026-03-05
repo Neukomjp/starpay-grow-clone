@@ -1,0 +1,24 @@
+
+> starpay-grow-clone@0.1.0 build
+> next build
+
+笆ｲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+笨・Compiled successfully in 5.1s
+  Running TypeScript ...
+Failed to compile.
+
+./src/app/store/[slug]/booking-section.tsx:85:29
+Type error: Type '{ storeId: string; selected: Date | undefined; onSelect: (date: Date, time?: string | undefined) => void; themeColor: string | undefined; }' is not assignable to type 'IntrinsicAttributes & WeeklyCalendarProps'.
+  Property 'selected' does not exist on type 'IntrinsicAttributes & WeeklyCalendarProps'.
+
+  83 |                         <WeeklyCalendar
+  84 |                             storeId={storeId}
+> 85 |                             selected={selectedDate}
+     |                             ^
+  86 |                             onSelect={handleSlotSelect}
+  87 |                             themeColor={themeColor}
+  88 |                         />
+Next.js build worker exited with code: 1 and signal: null

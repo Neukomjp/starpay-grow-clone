@@ -1,0 +1,134 @@
+
+> starpay-grow-clone@0.1.0 lint
+> eslint
+
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\bookings\calendar-view.tsx
+   6:10  warning  'updateStatusAction' is defined but never used            @typescript-eslint/no-unused-vars
+   9:10  warning  'toast' is defined but never used                         @typescript-eslint/no-unused-vars
+  26:77  warning  'updateBookingStatus' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\bookings\manual-booking-dialog.tsx
+  491:70  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\customers\page.tsx
+  90:57  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\stores\[id]\shift-dialog.tsx
+   7:10  warning  'Label' is defined but never used         @typescript-eslint/no-unused-vars
+  63:74  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\stores\[id]\shift-manager.tsx
+  18:10  warning  'ja' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\mypage\page.tsx
+  119:91  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  121:94  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  156:82  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  190:73  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\signup\page.tsx
+  5:10  warning  'useRouter' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\store\[slug]\booking-form.tsx
+   77:38   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  212:26   warning  'paymentError' is defined but never used                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  351:9    warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  472:53   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  699:116  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  702:102  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  704:208  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  704:216  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  704:279  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  704:287  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  708:250  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  708:258  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  708:321  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  708:329  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  709:220  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  709:228  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  709:302  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  709:310  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\store\[slug]\booking-section.tsx
+   6:10  warning  'ja' is defined but never used                         @typescript-eslint/no-unused-vars
+   9:10  warning  'cn' is defined but never used                         @typescript-eslint/no-unused-vars
+  23:11  warning  'handleDateSelect' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\store\[slug]\page.tsx
+   28:41  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   49:18  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   69:41  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   94:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  144:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  170:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  197:41  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\store\[slug]\thanks\page.tsx
+  7:11  warning  'slug' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\components\image-upload.tsx
+  56:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\components\visit-record-dialog.tsx
+  3:20  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\actions\auth.ts
+   4:10  warning  'customerService' is defined but never used  @typescript-eslint/no-unused-vars
+  15:13  warning  'data' is assigned a value but never used    @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\actions\booking.ts
+   32:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:74  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  141:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\actions\store.ts
+  42:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  56:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\actions\tickets.ts
+  4:24  warning  'CustomerTicket' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\actions\visit.ts
+  5:10  warning  'VisitRecord' is defined but never used   @typescript-eslint/no-unused-vars
+  7:55  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\bookings.ts
+  192:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\menu.ts
+    5:5   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+   17:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   33:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   50:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   64:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   79:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+   95:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+  111:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+  125:25  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\payment.ts
+  40:30  warning  '_intentId' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\stores.ts
+   9:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  50:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  63:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  92:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\tickets.ts
+  8:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\store\useBookingStore.ts
+  67:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\test-store.ts
+  9:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\test_update.js
+  1:198  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+笨・74 problems (47 errors, 27 warnings)
+  0 errors and 3 warnings potentially fixable with the `--fix` option.
+

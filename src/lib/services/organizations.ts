@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/client'
-import { Organization, OrganizationMember } from '@/lib/types/organization'
+import { Organization } from '@/lib/types/organization'
 
 export const organizationService = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async getUserOrganizations(userId?: string, customClient?: any) {
         const supabase = customClient || createClient()
         const { data: { user } } = await supabase.auth.getUser()
@@ -14,9 +15,10 @@ export const organizationService = {
             .eq('user_id', targetUserId)
 
         if (error) throw new Error(error.message)
-        return data.map((m: any) => ({ ...m.organization, role: m.role })) as (Organization & { role: string })[]
+        return data.map((m: Record<string, unknown>) => ({ ...(m.organization as Record<string, unknown>), role: m.role })) as (Organization & { role: string })[]
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async createOrganization(name: string, userId: string, customClient?: any): Promise<Organization> {
         const supabase = customClient || createClient()
         const baseSlug = name.toLowerCase().replace(/\s+/g, '-')
@@ -52,6 +54,7 @@ export const organizationService = {
         } as Organization
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async getOrganizationById(id: string, customClient?: any) {
         const supabase = customClient || createClient()
         const { data, error } = await supabase
@@ -64,6 +67,7 @@ export const organizationService = {
         return data as Organization
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async updateOrganization(id: string, updates: Partial<Organization>, customClient?: any) {
         const supabase = customClient || createClient()
         const { data, error } = await supabase

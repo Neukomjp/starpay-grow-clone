@@ -1,0 +1,39 @@
+
+> starpay-grow-clone@0.1.0 lint
+> eslint
+
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\bookings\manual-booking-dialog.tsx
+  113:17  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  205:17  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  218:13  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  220:13  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  295:5   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  297:5   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  376:49  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  382:66  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  419:38  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  493:45  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\mypage\page.tsx
+  19:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  21:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\store\[slug]\booking-form.tsx
+  72:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-unused-vars')
+  75:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\menu.ts
+    5:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   15:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   31:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   48:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   62:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   77:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   93:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  109:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  123:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+笨・23 problems (9 errors, 14 warnings)
+  0 errors and 14 warnings potentially fixable with the `--fix` option.
+

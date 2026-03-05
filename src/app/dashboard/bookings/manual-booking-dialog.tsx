@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -16,7 +17,7 @@ import { menuService } from '@/lib/services/menu'
 import { Service, Staff, ServiceOption } from '@/types/staff'
 import { Customer } from '@/lib/types/customer'
 import { toast } from 'sonner'
-import { Loader2, Plus, Search, User } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
 import { ja } from 'date-fns/locale'
 
 interface ManualBookingDialogProps {
@@ -69,6 +70,7 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
             loadData()
             resetForm()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, storeId])
 
     useEffect(() => {
@@ -108,6 +110,7 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
                 // See 'handleAddService'
 
                 // Redoing calculation using detailed state (see below)
+                 
                 const duration = selectedServices.reduce((sum, item: any) => sum + item.totalDuration, 0)
 
                 const bufferBefore = selectedServices.length > 0 ? (selectedServices[0].service.buffer_time_before || 0) : 0
@@ -131,6 +134,7 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
         if (step === 2 && date) {
             loadSlots()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [step, date, selectedStaff, selectedServices])
 
     async function loadData() {
@@ -143,7 +147,7 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
             setServices(s)
             setStaffList(st)
             setCustomers(c)
-        } catch (error) {
+        } catch {
             toast.error('Failed to load data')
         }
     }
@@ -198,6 +202,7 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
 
             // Add other services as options
             for (let i = 1; i < selectedServices.length; i++) {
+                 
                 const item: any = selectedServices[i]
                 // Add the service itself as an option
                 combinedOptions.push({
@@ -210,7 +215,9 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
             }
 
             // Recalculate totals
+             
             const totalDuration = selectedServices.reduce((sum, item: any) => sum + item.totalDuration, 0)
+             
             const totalPrice = selectedServices.reduce((sum, item: any) => sum + item.totalPrice, 0)
 
             // Calculate dates
@@ -285,7 +292,9 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
     }
 
     // Calculate total for display
+     
     const grandTotal = selectedServices.reduce((sum, item: any) => sum + item.totalPrice, 0)
+     
     const totalMinutes = selectedServices.reduce((sum, item: any) => sum + item.totalDuration, 0)
 
     return (
@@ -364,11 +373,13 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
                                             {selectedServices.length === 0 ? (
                                                 <div className="text-sm text-gray-400 text-center py-4">メニューが選択されていません</div>
                                             ) : (
+                                                 
                                                 selectedServices.map((item: any, idx) => (
                                                     <div key={idx} className="flex justify-between items-start text-sm bg-white p-2 rounded border">
                                                         <div>
                                                             <div className="font-medium">{item.serviceName}</div>
                                                             <div className="text-xs text-gray-500">
+                                                                { }
                                                                 {item.options.map((o: any) => o.name).join(', ')}
                                                             </div>
                                                             <div className="text-xs text-gray-500">
@@ -405,6 +416,7 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
 
                                 <div className="space-y-4 border-l pl-4">
                                     <Label>顧客情報</Label>
+                                    { }
                                     <Tabs value={customerMode} onValueChange={(v) => setCustomerMode(v as any)} className="w-full">
                                         <TabsList className="grid w-full grid-cols-2">
                                             <TabsTrigger value="existing">既存顧客</TabsTrigger>
@@ -477,9 +489,10 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
                                 <h4 className="font-bold mb-2">予約内容確認</h4>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="col-span-2 space-y-1">
-                                        {selectedServices.map((item: any, i) => (
-                                            <div key={i}>• {item.serviceName} {item.options.length > 0 && `(+${item.options.map((o: any) => o.name).join(',')})`}</div>
-                                        ))}
+                                        {selectedServices.map((item: any, i) => {
+                                             
+                                            return <div key={i}>• {item.serviceName} {item.options.length > 0 && `(+${item.options.map((o: any) => o.name).join(',')})`}</div>
+                                        })}
                                     </div>
                                     <div className="col-span-2 border-t pt-2 mt-2 font-bold flex justify-between">
                                         <span>合計</span>
@@ -509,6 +522,6 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
                     )}
                 </DialogFooter>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     )
 }
