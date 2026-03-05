@@ -49,6 +49,10 @@ export function canManageBilling(role: OrganizationRole): boolean {
     return hasPermission(role, PERMISSIONS.MANAGE_BILLING)
 }
 
+export function canManageMembers(role: OrganizationRole): boolean {
+    return hasPermission(role, PERMISSIONS.MANAGE_MEMBERS)
+}
+
 export function canViewStores(role: OrganizationRole): boolean {
     return hasPermission(role, PERMISSIONS.VIEW_STORES)
 }

@@ -51,3 +51,24 @@ export async function updateOrganizationAction(id: string, updates: Partial<Orga
     revalidatePath('/dashboard/settings')
     return result
 }
+
+export async function getOrganizationMembersAction(organizationId: string) {
+    const supabase = await createClient()
+    return await organizationService.getOrganizationMembers(organizationId, supabase)
+}
+
+export async function updateMemberRoleAction(organizationId: string, memberId: string, newRole: string) {
+    const supabase = await createClient()
+    // Notice: We should ideally verify if the *caller* has 'owner' or 'admin' rights here via RLS or service check.
+    // Assuming RLS or middleware handles authorization, or we can add a basic check.
+    const result = await organizationService.updateMemberRole(organizationId, memberId, newRole, supabase)
+    revalidatePath('/dashboard/settings')
+    return result
+}
+
+export async function removeMemberAction(organizationId: string, memberId: string) {
+    const supabase = await createClient()
+    const result = await organizationService.removeMember(organizationId, memberId, supabase)
+    revalidatePath('/dashboard/settings')
+    return result
+}

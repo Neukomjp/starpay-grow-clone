@@ -5,17 +5,65 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useCurrentOrganization } from '@/hooks/use-current-organization'
-import { Loader2, Users, CreditCard } from 'lucide-react'
-import { canManageBilling } from '@/lib/rbac'
+import { Loader2, Users, CreditCard, MoreHorizontal } from 'lucide-react'
+import { canManageBilling, canManageMembers } from '@/lib/rbac'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { updateOrganizationAction } from '@/lib/actions/organization'
-import { useState } from 'react'
+import { updateOrganizationAction, getOrganizationMembersAction, updateMemberRoleAction, removeMemberAction } from '@/lib/actions/organization'
+import { useState, useEffect } from 'react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 
 export function OrganizationSettings() {
     const { organization, loading } = useCurrentOrganization()
     const [connectingStripe, setConnectingStripe] = useState(false)
+    const [members, setMembers] = useState<any[]>([])
+    const [loadingMembers, setLoadingMembers] = useState(true)
+
+    useEffect(() => {
+        if (organization) {
+            loadMembers()
+        }
+    }, [organization])
+
+    const loadMembers = async () => {
+        if (!organization) return
+        try {
+            setLoadingMembers(true)
+            const data = await getOrganizationMembersAction(organization.id)
+            setMembers(data)
+        } catch (error) {
+            console.error(error)
+            toast.error('メンバー一覧の取得に失敗しました')
+        } finally {
+            setLoadingMembers(false)
+        }
+    }
+
+    const handleRoleChange = async (memberId: string, newRole: string) => {
+        if (!organization) return
+        try {
+            await updateMemberRoleAction(organization.id, memberId, newRole)
+            toast.success('権限を更新しました')
+            loadMembers()
+        } catch (error) {
+            console.error(error)
+            toast.error('権限の更新に失敗しました')
+        }
+    }
+
+    const handleRemoveMember = async (memberId: string) => {
+        if (!organization) return
+        if (!confirm('本当にこのメンバーを削除しますか？')) return
+        try {
+            await removeMemberAction(organization.id, memberId)
+            toast.success('メンバーを削除しました')
+            loadMembers()
+        } catch (error) {
+            console.error(error)
+            toast.error('メンバーの削除に失敗しました')
+        }
+    }
 
     if (loading) return <div className="py-8 text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto" /></div>
 
@@ -178,33 +226,49 @@ export function OrganizationSettings() {
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between border-b pb-4">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-gray-200 rounded-full p-2">
-                                    <Users className="h-4 w-4 text-gray-600" />
+                        {loadingMembers ? (
+                            <div className="py-8 flex justify-center"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
+                        ) : (
+                            members.map((member) => (
+                                <div key={member.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-gray-200 rounded-full p-2 flex-shrink-0">
+                                            <Users className="h-4 w-4 text-gray-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-medium">
+                                                {member.profile?.full_name || member.profile?.email || '名前未設定'}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">{member.profile?.email}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="secondary" className="capitalize">
+                                            {member.role === 'owner' ? 'オーナー' : member.role === 'admin' ? '管理者' : 'メンバー'}
+                                        </Badge>
+                                        {canManageMembers(organization.role) && member.role !== 'owner' && (
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon">
+                                                        <MoreHorizontal className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuItem onClick={() => handleRoleChange(member.id, 'admin')}>管理者 (Admin) に変更</DropdownMenuItem>
+                                                    <DropdownMenuItem onClick={() => handleRoleChange(member.id, 'member')}>一般メンバーに変更</DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700" onClick={() => handleRemoveMember(member.id)}>組織から削除</DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        )}
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="font-medium">Current User (You)</p>
-                                    <p className="text-sm text-muted-foreground">{organization.role}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {/* Mock other members */}
-                        <div className="flex items-center justify-between border-b pb-4 opacity-60">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-gray-200 rounded-full p-2">
-                                    <Users className="h-4 w-4 text-gray-600" />
-                                </div>
-                                <div>
-                                    <p className="font-medium">Demo Admin</p>
-                                    <p className="text-sm text-muted-foreground">admin</p>
-                                </div>
-                            </div>
-                        </div>
+                            ))
+                        )}
                     </div>
 
                     <div className="mt-6">
-                        <Button variant="secondary" className="w-full" onClick={() => toast.info('Invite flow mock')}>
+                        <Button variant="secondary" className="w-full" onClick={() => toast.info('機能は準備中です')}>
                             メンバーを招待
                         </Button>
                     </div>

@@ -79,5 +79,51 @@ export const organizationService = {
 
         if (error) throw new Error(error.message)
         return data as Organization
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async getOrganizationMembers(organizationId: string, customClient?: any) {
+        const supabase = customClient || createClient()
+        const { data, error } = await supabase
+            .from('organization_members')
+            .select(`
+                id,
+                organization_id,
+                user_id,
+                role,
+                joined_at,
+                profile:profiles(id, full_name, email, phone)
+            `)
+            .eq('organization_id', organizationId)
+            .order('joined_at', { ascending: true })
+
+        if (error) throw new Error(error.message)
+        return data
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async updateMemberRole(organizationId: string, memberId: string, newRole: string, customClient?: any) {
+        const supabase = customClient || createClient()
+        const { error } = await supabase
+            .from('organization_members')
+            .update({ role: newRole })
+            .eq('organization_id', organizationId)
+            .eq('id', memberId)
+
+        if (error) throw new Error(error.message)
+        return true
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async removeMember(organizationId: string, memberId: string, customClient?: any) {
+        const supabase = customClient || createClient()
+        const { error } = await supabase
+            .from('organization_members')
+            .delete()
+            .eq('organization_id', organizationId)
+            .eq('id', memberId)
+
+        if (error) throw new Error(error.message)
+        return true
     }
 }
