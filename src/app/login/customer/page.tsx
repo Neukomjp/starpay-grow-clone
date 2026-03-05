@@ -57,7 +57,12 @@ export default function CustomerLoginPage() {
                             <Input id="email" name="email" type="email" required placeholder="m@example.com" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">パスワード</Label>
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="password">パスワード</Label>
+                                <Link href="/reset-password/customer" className="text-sm font-medium text-blue-600 hover:underline">
+                                    パスワードを忘れた場合
+                                </Link>
+                            </div>
                             <Input id="password" name="password" type="password" required />
                         </div>
                         <Button type="submit" className="w-full" disabled={loading}>
