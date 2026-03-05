@@ -12,7 +12,8 @@ export type Organization = {
         favicon_url?: string
         primary_color?: string
         remove_branding?: boolean
-    }
+    },
+    stripe_account_id?: string | null,
     created_at: string
     updated_at: string
 }

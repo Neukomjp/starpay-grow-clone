@@ -69,10 +69,10 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
 
     // Payment State
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('local')
-     
+
     const [paymentInProgress, setPaymentInProgress] = useState(false)
     const [couponCode, setCouponCode] = useState('')
-     
+
     const [appliedCoupon, setAppliedCoupon] = useState<any>(null)
     const [discountAmount, setDiscountAmount] = useState(0)
     const [couponError, setCouponError] = useState('')
@@ -203,12 +203,16 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
 
             const totalPrice = Math.max(0, subtotal - discountAmount) // Apply discount
 
-            // Process Payment if not local
+            // For card payments, we start as unpaid and pending until webhook confirms
             let paymentStatus: 'unpaid' | 'paid' = 'unpaid'
+            let initialBookingStatus = 'confirmed'
 
-            if (paymentMethod !== 'local') {
+            if (paymentMethod === 'card') {
+                paymentStatus = 'unpaid'
+                initialBookingStatus = 'pending'
+            } else if (paymentMethod !== 'local') {
+                // For other simulated payments like PayPay
                 try {
-                    // Simulate payment flow
                     await paymentService.createPaymentIntent(totalPrice, paymentMethod)
                     paymentStatus = 'paid'
                     toast.success('決済が完了しました')
@@ -242,7 +246,7 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                 }))
             ]
 
-            await createBookingAction({
+            const bookingResult = await createBookingAction({
                 store_id: storeId,
                 service_id: primaryService.id, // Use primary service ID
                 staff_id: selectedStaff === 'no-preference' ? null : selectedStaff,
@@ -258,10 +262,42 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                 payment_method: paymentMethod,
                 buffer_minutes_before: primaryService.buffer_time_before || 0,
                 buffer_minutes_after: primaryService.buffer_time_after || 0,
-                status: 'confirmed'
+                status: initialBookingStatus
             })
 
-            // Send Confirmation Email
+            // If card payment, redirect to Stripe NOW
+            if (paymentMethod === 'card') {
+                try {
+                    const res = await fetch('/api/checkout_sessions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            bookingId: bookingResult.id,
+                            amount: totalPrice,
+                            serviceName: primaryService.name,
+                            storeName: storeName,
+                            storeId: storeId,
+                            customerEmail: customerEmail
+                        })
+                    })
+                    const data = await res.json()
+
+                    if (data.url) {
+                        window.location.href = data.url
+                        return // Let the browser navigate to Stripe
+                    } else {
+                        throw new Error(data.message || 'Stripe Session Error')
+                    }
+                } catch (e) {
+                    console.error('Stripe redirect failed:', e)
+                    toast.error('決済画面への移行に失敗しました。予約は仮押さえ状態です。')
+                    setLoading(false)
+                    setPaymentInProgress(false)
+                    return
+                }
+            }
+
+            // Send Confirmation Email for non-card methods (card will send it via webhook/success page later)
             const serviceName = services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(', ')
             const staffName = selectedStaff === 'no-preference' ? '指定なし' : staffList.find(s => s.id === selectedStaff)?.name
 
@@ -279,7 +315,7 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                         staffName,
                         date: bookingDate.toLocaleDateString(),
                         time: time,
-                        paymentMethod: paymentMethod === 'local' ? '現地決済' : paymentMethod === 'card' ? 'クレジットカード' : 'PayPay',
+                        paymentMethod: paymentMethod === 'local' ? '現地決済' : (paymentMethod as string) === 'card' ? 'クレジットカード' : 'PayPay',
                         totalPrice: totalPrice,
                         storeName: storeName // Add this
                     }
@@ -294,7 +330,7 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
             toast.success('予約が完了しました！確認メールを送信しました。')
             setOpen(false)
             resetForm()
-            router.push(`/ store / ${slug}/thanks`)
+            router.push(`/store/${slug}/thanks`)
         } catch (error) {
             console.error('Booking failed:', error)
             toast.error('予約に失敗しました。もう一度お試しください。')

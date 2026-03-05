@@ -11,9 +11,11 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { updateOrganizationAction } from '@/lib/actions/organization'
+import { useState } from 'react'
 
 export function OrganizationSettings() {
     const { organization, loading } = useCurrentOrganization()
+    const [connectingStripe, setConnectingStripe] = useState(false)
 
     if (loading) return <div className="py-8 text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto" /></div>
 
@@ -78,6 +80,52 @@ export function OrganizationSettings() {
                                 プランを変更 / 請求管理
                             </Button>
                         </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>決済連携 (Stripe Connect)</CardTitle>
+                    <CardDescription>
+                        お客様からのクレジットカード決済の売上を直接受け取るために、Stripeアカウントを連携します。
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="font-medium">連携状況</p>
+                            <p className="text-sm text-muted-foreground">
+                                {organization.stripe_account_id ? '連携済み' : '未連携'}
+                            </p>
+                        </div>
+                        <Button
+                            disabled={connectingStripe || !!organization.stripe_account_id}
+                            onClick={async () => {
+                                setConnectingStripe(true)
+                                try {
+                                    const res = await fetch('/api/stripe/connect', { method: 'POST' })
+                                    const data = await res.json()
+                                    if (data.url) {
+                                        window.location.href = data.url
+                                    } else {
+                                        toast.error(data.message || '連携URLの取得に失敗しました')
+                                        setConnectingStripe(false)
+                                    }
+                                } catch (e) {
+                                    toast.error('エラーが発生しました')
+                                    setConnectingStripe(false)
+                                }
+                            }}
+                        >
+                            {connectingStripe ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            {organization.stripe_account_id ? '連携完了' : 'Stripeと連携する'}
+                        </Button>
+                    </div>
+                    {organization.stripe_account_id && (
+                        <p className="text-xs text-green-600 font-medium">
+                            ✓ アカウントID: {organization.stripe_account_id} に売上が直接入金されます。
+                        </p>
                     )}
                 </CardContent>
             </Card>
