@@ -84,21 +84,35 @@ export const organizationService = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async getOrganizationMembers(organizationId: string, customClient?: any) {
         const supabase = customClient || createClient()
-        const { data, error } = await supabase
+        // 1. Fetch members
+        const { data: members, error } = await supabase
             .from('organization_members')
-            .select(`
-                id,
-                organization_id,
-                user_id,
-                role,
-                joined_at,
-                profile:profiles(id, full_name, email, phone)
-            `)
+            .select('*')
             .eq('organization_id', organizationId)
             .order('joined_at', { ascending: true })
 
         if (error) throw new Error(error.message)
-        return data
+        if (!members || members.length === 0) return []
+
+        // 2. Fetch profiles for these members
+        const userIds = members.map((m: any) => m.user_id)
+        const { data: profiles, error: profilesError } = await supabase
+            .from('profiles')
+            .select('id, full_name, email, phone')
+            .in('id', userIds)
+
+        if (profilesError) {
+            console.error('Failed to fetch profiles for members', profilesError)
+            // Return members without profiles if fetching profiles fails (e.g. RLS issues)
+            return members
+        }
+
+        // 3. Map profiles to members
+        const profileMap = new Map(profiles?.map((p: any) => [p.id, p]) || [])
+        return members.map((m: any) => ({
+            ...m,
+            profile: profileMap.get(m.user_id) || null
+        }))
     },
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
