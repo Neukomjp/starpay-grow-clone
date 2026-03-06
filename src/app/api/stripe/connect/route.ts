@@ -11,22 +11,27 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
-        // 1. Ensure the user is an owner and get their store
-        const { data: store, error: storeError } = await supabase
-            .from('stores')
-            .select('id, stripe_account_id')
-            .eq('owner_id', user.id)
+        // 1. Ensure the user is an owner of at least one organization
+        // For simplicity, we get their first org where they are an owner.
+        const { data: orgMember, error: orgMemberError } = await supabase
+            .from('organization_members')
+            .select('organization_id')
+            .eq('user_id', user.id)
+            .eq('role', 'owner')
+            .limit(1)
             .single()
 
-        if (storeError || !store) {
-            return NextResponse.json({ message: 'Store not found' }, { status: 404 })
+        if (orgMemberError || !orgMember) {
+            return NextResponse.json({ message: 'Organization owner not found' }, { status: 404 })
         }
+
+        const orgId = orgMember.organization_id
 
         const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
         // 2. We use Stripe OAuth standard flow
-        // To use state, we can pass the storeId to verify in the callback
-        const state = Buffer.from(JSON.stringify({ storeId: store.id })).toString('base64')
+        // To use state, we can pass the orgId to verify in the callback
+        const state = Buffer.from(JSON.stringify({ orgId })).toString('base64')
 
         // Generate the Connect URL
         const clientId = process.env.STRIPE_CLIENT_ID // Usually starts with ca_

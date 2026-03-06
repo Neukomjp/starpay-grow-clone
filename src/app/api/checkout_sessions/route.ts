@@ -15,13 +15,28 @@ export async function POST(req: Request) {
         }
 
         const supabase = await createClient()
+
+        // 1. Get the merchant ID of the store
         const { data: storeData } = await supabase
             .from('stores')
-            .select('stripe_account_id')
+            .select('merchant_id')
             .eq('id', storeId)
             .single()
 
-        const stripeAccountId = storeData?.stripe_account_id
+        if (!storeData?.merchant_id) {
+            return NextResponse.json({ message: '店舗が見つかりません。' }, { status: 404 })
+        }
+
+        // 2. Find the organization where this merchant is the owner
+        const { data: orgMember } = await supabase
+            .from('organization_members')
+            .select('organization:organizations(stripe_account_id)')
+            .eq('user_id', storeData.merchant_id)
+            .eq('role', 'owner')
+            .limit(1)
+            .single()
+
+        const stripeAccountId = (orgMember?.organization as any)?.stripe_account_id
 
         if (!stripeAccountId) {
             console.error('Store does not have a connected Stripe account')

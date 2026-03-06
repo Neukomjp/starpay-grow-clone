@@ -32,8 +32,8 @@ export async function GET(req: Request) {
             return NextResponse.redirect(`${origin}/dashboard/settings?stripe_error=missing_params`)
         }
 
-        // Decode the state to get the internal store ID
-        let decodedState: { storeId: string }
+        // Decode the state to get the internal organization ID
+        let decodedState: { orgId: string }
         try {
             decodedState = JSON.parse(Buffer.from(state, 'base64').toString('ascii'))
         } catch (e) {
@@ -53,11 +53,11 @@ export async function GET(req: Request) {
             throw new Error('No stripe_user_id returned from OAuth token exchange')
         }
 
-        // Update the Supabase store record with the new stripe_account_id
+        // Update the Supabase organization record with the new stripe_account_id
         const { error: dbError } = await supabaseAdmin
-            .from('stores')
+            .from('organizations')
             .update({ stripe_account_id: connectedAccountId })
-            .eq('id', decodedState.storeId)
+            .eq('id', decodedState.orgId)
 
         if (dbError) {
             console.error('Supabase update error:', dbError)
