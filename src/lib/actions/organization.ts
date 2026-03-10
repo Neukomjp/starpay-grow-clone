@@ -79,7 +79,7 @@ export async function inviteMemberAction(organizationId: string, email: string, 
         const supabase = await createClient()
 
         // 1. Actually invite the member in the database
-        await organizationService.inviteMember(organizationId, email, role, supabase)
+        await organizationService.inviteMember(organizationId, email, role)
 
         // 2. Fetch the organization to get its name for the email
         const org = await organizationService.getOrganizationById(organizationId, supabase)

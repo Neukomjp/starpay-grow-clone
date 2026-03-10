@@ -142,11 +142,17 @@ export const organizationService = {
     },
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async inviteMember(organizationId: string, email: string, role: string, customClient?: any) {
-        const supabase = customClient || createClient()
+    async inviteMember(organizationId: string, email: string, role: string) {
+        // Use the admin client (Service Role Key) specifically for inviting,
+        // because standard users cannot read other users' emails from the profiles table due to RLS.
+        const { createClient: createSupabaseClient } = await import('@supabase/supabase-js')
+        const adminSupabase = createSupabaseClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        )
 
-        // 1. Find user by email from profiles table
-        const { data: profile, error: profileError } = await supabase
+        // 1. Find user by email from profiles table bypassing RLS
+        const { data: profile, error: profileError } = await adminSupabase
             .from('profiles')
             .select('id')
             .eq('email', email)
@@ -157,7 +163,7 @@ export const organizationService = {
         }
 
         // 2. Check if already a member
-        const { data: existingMember } = await supabase
+        const { data: existingMember } = await adminSupabase
             .from('organization_members')
             .select('id')
             .eq('organization_id', organizationId)
@@ -169,7 +175,7 @@ export const organizationService = {
         }
 
         // 3. Add member
-        const { data: member, error: memberError } = await supabase
+        const { data: member, error: memberError } = await adminSupabase
             .from('organization_members')
             .insert([{
                 organization_id: organizationId,

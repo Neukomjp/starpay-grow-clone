@@ -37,11 +37,11 @@ C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboar
   164:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
   173:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
-C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\actions\organization.ts
-  113:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\services\organizations.ts
+  145:77  warning  'customClient' is defined but never used  @typescript-eslint/no-unused-vars
 
 C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\stripe.ts
   10:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
-笨・22 problems (20 errors, 2 warnings)
+笨・22 problems (19 errors, 3 warnings)
 
