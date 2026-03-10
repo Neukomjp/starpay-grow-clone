@@ -48,9 +48,9 @@ import { Organization } from '@/lib/types/organization'
 
 export async function updateOrganizationAction(id: string, updates: Partial<Organization>) {
     const supabase = await createClient()
-    const result = await organizationService.updateOrganization(id, updates, supabase)
+    await organizationService.updateOrganization(id, updates, supabase)
     revalidatePath('/dashboard/settings')
-    return result
+    return { success: true }
 }
 
 export async function getOrganizationMembersAction(organizationId: string) {
@@ -62,23 +62,23 @@ export async function updateMemberRoleAction(organizationId: string, memberId: s
     const supabase = await createClient()
     // Notice: We should ideally verify if the *caller* has 'owner' or 'admin' rights here via RLS or service check.
     // Assuming RLS or middleware handles authorization, or we can add a basic check.
-    const result = await organizationService.updateMemberRole(organizationId, memberId, newRole, supabase)
+    await organizationService.updateMemberRole(organizationId, memberId, newRole, supabase)
     revalidatePath('/dashboard/settings')
-    return result
+    return { success: true }
 }
 
 export async function removeMemberAction(organizationId: string, memberId: string) {
     const supabase = await createClient()
-    const result = await organizationService.removeMember(organizationId, memberId, supabase)
+    await organizationService.removeMember(organizationId, memberId, supabase)
     revalidatePath('/dashboard/settings')
-    return result
+    return { success: true }
 }
 
 export async function inviteMemberAction(organizationId: string, email: string, role: string) {
     const supabase = await createClient()
 
     // 1. Actually invite the member in the database
-    const result = await organizationService.inviteMember(organizationId, email, role, supabase)
+    await organizationService.inviteMember(organizationId, email, role, supabase)
 
     // 2. Fetch the organization to get its name for the email
     const org = await organizationService.getOrganizationById(organizationId, supabase)
@@ -108,5 +108,5 @@ export async function inviteMemberAction(organizationId: string, email: string, 
     })
 
     revalidatePath('/dashboard/settings')
-    return result
+    return { success: true }
 }
