@@ -315,7 +315,7 @@ export function OrganizationSettings() {
                     <div className="mt-6">
                         <Dialog open={isInviteModalOpen} onOpenChange={setIsInviteModalOpen}>
                             <DialogTrigger asChild>
-                                <Button variant="secondary" className="w-full">
+                                <Button variant="secondary" className="w-full hover:bg-gray-300 transition-colors duration-200 border">
                                     メンバーを招待
                                 </Button>
                             </DialogTrigger>
