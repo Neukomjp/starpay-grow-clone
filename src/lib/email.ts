@@ -1,15 +1,8 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-// Initialize Nodemailer Transport with SMTP details from environment variables
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
-});
+// Initialize Resend with API Key from environment variables
+// If no key is provided, it will throw an error or fail silently depending on usage
+const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789'); // Valid placeholder to prevent crash if env missing
 
 interface EmailParams {
     to: string | string[];
@@ -20,24 +13,29 @@ interface EmailParams {
 }
 
 export async function sendEmail({ to, subject, html, fromEmail, fromName }: EmailParams) {
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-        console.warn('SMTP variables (SMTP_HOST, SMTP_USER, SMTP_PASS) are not fully set. Email sending skipped.');
-        return { success: false, error: 'SMTP configuration missing' };
+    if (!process.env.RESEND_API_KEY) {
+        console.warn('RESEND_API_KEY is not set. Email sending skipped.');
+        return { success: false, error: 'API Key missing' };
     }
 
     try {
-        const sender = fromEmail
-            ? `"${fromName || 'Salon Booking System'}" <${fromEmail}>`
-            : `"${process.env.SMTP_FROM_NAME || 'Salon Booking System'}" <${process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER}>`;
+        const sender = fromEmail ? `${fromName || 'Salon Booking System'} <${fromEmail}>` : 'Salon Booking System <onboarding@resend.dev>';
 
-        const info = await transporter.sendMail({
+        const { data, error } = await resend.emails.send({
             from: sender,
-            to: Array.isArray(to) ? to.join(', ') : to,
+            to: Array.isArray(to) ? to : [to],
+            // resend free tier only allows sending to verified email, or to yourself (the account owner)
+            // ensuring this doesn't break app flow
             subject: subject,
             html: html,
         });
 
-        return { success: true, data: info };
+        if (error) {
+            console.error('Resend API Error:', error);
+            return { success: false, error };
+        }
+
+        return { success: true, data };
     } catch (error) {
         console.error('Failed to send email:', error);
         return { success: false, error };
