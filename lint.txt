@@ -1,0 +1,47 @@
+
+> starpay-grow-clone@0.1.0 lint
+> eslint
+
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\api\checkout_sessions\route.ts
+  39:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  82:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\api\stripe\callback\route.ts
+  39:18  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+  70:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\api\stripe\connect\route.ts
+   2:10  warning  'stripe' is defined but never used        @typescript-eslint/no-unused-vars
+  48:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\api\webhooks\stripe\route.ts
+  33:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  40:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\coupons\page.tsx
+  24:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\customers\page.tsx
+  53:70  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\app\dashboard\layout.tsx
+   55:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   67:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   74:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   81:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   88:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  146:59  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  155:57  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  164:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  173:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\actions\organization.ts
+  113:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\zjkdf\莠育ｴ・す繧ｹ繝・Β\starpay-grow-clone\src\lib\stripe.ts
+  10:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+笨・22 problems (20 errors, 2 warnings)
+

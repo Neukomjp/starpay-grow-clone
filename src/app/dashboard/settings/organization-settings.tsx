@@ -94,12 +94,17 @@ export function OrganizationSettings() {
 
         try {
             setInviting(true)
-            await import('@/lib/actions/organization').then(m => m.inviteMemberAction(organization.id, inviteEmail, inviteRole))
-            toast.success('メンバーを追加しました')
-            setIsInviteModalOpen(false)
-            setInviteEmail('')
-            setInviteRole('member')
-            loadMembers()
+            const result = await import('@/lib/actions/organization').then(m => m.inviteMemberAction(organization.id, inviteEmail, inviteRole))
+
+            if (result && !result.success) {
+                toast.error(result.error || '招待に失敗しました')
+            } else {
+                toast.success('メンバーを追加しました')
+                setIsInviteModalOpen(false)
+                setInviteEmail('')
+                setInviteRole('member')
+                loadMembers()
+            }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error(error)
