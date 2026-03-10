@@ -72,3 +72,10 @@ export async function removeMemberAction(organizationId: string, memberId: strin
     revalidatePath('/dashboard/settings')
     return result
 }
+
+export async function inviteMemberAction(organizationId: string, email: string, role: string) {
+    const supabase = await createClient()
+    const result = await organizationService.inviteMember(organizationId, email, role, supabase)
+    revalidatePath('/dashboard/settings')
+    return result
+}

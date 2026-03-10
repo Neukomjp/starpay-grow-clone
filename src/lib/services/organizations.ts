@@ -95,7 +95,7 @@ export const organizationService = {
         if (!members || members.length === 0) return []
 
         // 2. Fetch profiles for these members
-        const userIds = members.map((m: any) => m.user_id)
+        const userIds = members.map((m: Record<string, unknown>) => m.user_id)
         const { data: profiles, error: profilesError } = await supabase
             .from('profiles')
             .select('id, full_name, email, phone')
@@ -108,8 +108,8 @@ export const organizationService = {
         }
 
         // 3. Map profiles to members
-        const profileMap = new Map(profiles?.map((p: any) => [p.id, p]) || [])
-        return members.map((m: any) => ({
+        const profileMap = new Map(profiles?.map((p: Record<string, unknown>) => [p.id, p]) || [])
+        return members.map((m: Record<string, unknown>) => ({
             ...m,
             profile: profileMap.get(m.user_id) || null
         }))
@@ -139,5 +139,50 @@ export const organizationService = {
 
         if (error) throw new Error(error.message)
         return true
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async inviteMember(organizationId: string, email: string, role: string, customClient?: any) {
+        const supabase = customClient || createClient()
+
+        // 1. Find user by email from profiles table
+        const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('email', email)
+            .single()
+
+        if (profileError || !profile) {
+            throw new Error('指定されたメールアドレスのユーザーが見つかりません。先にシステムにサインアップしてもらう必要があります。')
+        }
+
+        // 2. Check if already a member
+        const { data: existingMember } = await supabase
+            .from('organization_members')
+            .select('id')
+            .eq('organization_id', organizationId)
+            .eq('user_id', profile.id)
+            .single()
+
+        if (existingMember) {
+            throw new Error('このユーザーは既にメンバーです。')
+        }
+
+        // 3. Add member
+        const { data: member, error: memberError } = await supabase
+            .from('organization_members')
+            .insert([{
+                organization_id: organizationId,
+                user_id: profile.id,
+                role: role
+            }])
+            .select()
+            .single()
+
+        if (memberError) {
+            throw new Error(memberError.message)
+        }
+
+        return member
     }
 }

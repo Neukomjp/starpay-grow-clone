@@ -13,17 +13,36 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { updateOrganizationAction, getOrganizationMembersAction, updateMemberRoleAction, removeMemberAction } from '@/lib/actions/organization'
 import { useState, useEffect } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+
+// Define the type for the member directly rather than importing if it's not available yet
+type OrganizationMember = {
+    id: string;
+    user_id: string;
+    role: string;
+    profile: {
+        id: string;
+        full_name: string | null;
+        email: string;
+    } | null;
+}
 
 export function OrganizationSettings() {
     const { organization, loading } = useCurrentOrganization()
     const [connectingStripe, setConnectingStripe] = useState(false)
-    const [members, setMembers] = useState<any[]>([])
+    const [members, setMembers] = useState<OrganizationMember[]>([])
     const [loadingMembers, setLoadingMembers] = useState(true)
+    const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
+    const [inviteEmail, setInviteEmail] = useState('')
+    const [inviteRole, setInviteRole] = useState('member')
+    const [inviting, setInviting] = useState(false)
 
     useEffect(() => {
         if (organization) {
             loadMembers()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [organization])
 
     const loadMembers = async () => {
@@ -62,6 +81,31 @@ export function OrganizationSettings() {
         } catch (error) {
             console.error(error)
             toast.error('メンバーの削除に失敗しました')
+        }
+    }
+
+    const handleInviteMember = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!organization) return
+        if (!inviteEmail) {
+            toast.error('メールアドレスを入力してください')
+            return
+        }
+
+        try {
+            setInviting(true)
+            await import('@/lib/actions/organization').then(m => m.inviteMemberAction(organization.id, inviteEmail, inviteRole))
+            toast.success('メンバーを追加しました')
+            setIsInviteModalOpen(false)
+            setInviteEmail('')
+            setInviteRole('member')
+            loadMembers()
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error(error)
+            toast.error(error.message || '招待に失敗しました')
+        } finally {
+            setInviting(false)
         }
     }
 
@@ -160,7 +204,8 @@ export function OrganizationSettings() {
                                         toast.error(data.message || '連携URLの取得に失敗しました')
                                         setConnectingStripe(false)
                                     }
-                                } catch (e) {
+                                } catch (error) {
+                                    console.error(error)
                                     toast.error('エラーが発生しました')
                                     setConnectingStripe(false)
                                 }
@@ -268,9 +313,55 @@ export function OrganizationSettings() {
                     </div>
 
                     <div className="mt-6">
-                        <Button variant="secondary" className="w-full" onClick={() => toast.info('機能は準備中です')}>
-                            メンバーを招待
-                        </Button>
+                        <Dialog open={isInviteModalOpen} onOpenChange={setIsInviteModalOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="secondary" className="w-full">
+                                    メンバーを招待
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>メンバーを招待</DialogTitle>
+                                    <DialogDescription>
+                                        組織に新しいメンバーを追加します。追加するユーザーは先にシステムにアカウントを作成している必要があります。
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <form onSubmit={handleInviteMember} className="space-y-4">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="email">メールアドレス</Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            placeholder="example@example.com"
+                                            value={inviteEmail}
+                                            onChange={(e) => setInviteEmail(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="role">権限ロール</Label>
+                                        <Select value={inviteRole} onValueChange={setInviteRole}>
+                                            <SelectTrigger id="role">
+                                                <SelectValue placeholder="ロールを選択" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="member">一般メンバー</SelectItem>
+                                                <SelectItem value="admin">管理者 (Admin)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <DialogFooter>
+                                        <Button type="button" variant="outline" onClick={() => setIsInviteModalOpen(false)}>
+                                            キャンセル
+                                        </Button>
+                                        <Button type="submit" disabled={inviting}>
+                                            {inviting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                            追加する
+                                        </Button>
+                                    </DialogFooter>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </CardContent>
             </Card>
