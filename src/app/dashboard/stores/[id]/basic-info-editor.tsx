@@ -21,6 +21,8 @@ export function BasicInfoEditor({ store }: BasicInfoEditorProps) {
     const [name, setName] = useState(store.name)
     const [slug, setSlug] = useState(store.slug)
     const [description, setDescription] = useState(store.description || '')
+    const [address, setAddress] = useState(store.address || '')
+    const [phone, setPhone] = useState(store.phone || '')
     const [bookingInterval, setBookingInterval] = useState(store.booking_interval_minutes?.toString() || '30')
 
     // Initialize business days (default 10:00-19:00 if not set)
@@ -53,6 +55,8 @@ export function BasicInfoEditor({ store }: BasicInfoEditorProps) {
                 name,
                 slug,
                 description,
+                address,
+                phone,
                 booking_interval_minutes: parseInt(bookingInterval),
                 business_days: businessDays
             })
@@ -87,6 +91,14 @@ export function BasicInfoEditor({ store }: BasicInfoEditorProps) {
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="店舗の説明を入力してください"
                     />
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="address">住所（アクセス）</Label>
+                    <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="東京都渋谷区..." />
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="phone">電話番号</Label>
+                    <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="03-XXXX-XXXX" />
                 </div>
 
                 <div className="grid gap-2">

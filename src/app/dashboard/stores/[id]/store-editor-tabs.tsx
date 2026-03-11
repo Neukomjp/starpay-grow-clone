@@ -41,7 +41,7 @@ export function StoreEditorTabs({ store, initialTab = 'basic' }: StoreEditorTabs
                     <TabsTrigger value="staff">スタッフ管理</TabsTrigger>
                     <TabsTrigger value="shift">シフト管理</TabsTrigger>
                     <TabsTrigger value="ticket">回数券管理</TabsTrigger>
-                    <TabsTrigger value="notifications">通知設定</TabsTrigger>
+                    <TabsTrigger value="notifications">メール設定</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="basic" className="space-y-4">

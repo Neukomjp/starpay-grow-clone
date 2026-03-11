@@ -12,6 +12,23 @@ import { Service } from '@/types/staff'
 import { BookingSection } from './booking-section'
 import { TicketSection } from './ticket-section'
 
+function formatBusinessHours(days: any[] | undefined) {
+    if (!days || days.length === 0) return '営業時間未設定';
+    const openDays = days.filter(d => !d.is_closed);
+    if (openDays.length === 0) return '休業中';
+    
+    const firstOpen = openDays[0];
+    const closedDaysStr = days.filter(d => d.is_closed).map(d => ['日', '月', '火', '水', '木', '金', '土'][d.day_of_week]).join('・');
+    
+    let timeStr = `${firstOpen.start_time} - ${firstOpen.end_time}`;
+    if (closedDaysStr) {
+        timeStr += ` (${closedDaysStr}休)`;
+    } else {
+        timeStr += ' (年中無休)';
+    }
+    return timeStr;
+}
+
 // Force dynamic rendering as we rely on DB data that changes
 export const dynamic = 'force-dynamic'
 
@@ -123,7 +140,7 @@ export default async function StorePublicPage(props: { params: Promise<{ slug: s
                 <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-sm">
                     <Clock className="h-8 w-8 mb-4 text-emerald-600" />
                     <h3 className="font-semibold mb-2">営業時間</h3>
-                    <p className="text-gray-600">{store.address ? '月〜日: 9:00 - 20:00' : '営業時間未設定'}</p>
+                    <p className="text-gray-600">{formatBusinessHours(store.business_days)}</p>
                 </div>
                 <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-sm">
                     <MapPin className="h-8 w-8 mb-4 text-red-600" />
