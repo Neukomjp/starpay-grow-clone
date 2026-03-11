@@ -1,0 +1,5 @@
+[dotenv@17.3.1] injecting env (3) from .env.local -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Found 3 bookings for March:
+- 480d4228-0635-4032-be52-b708c229f130: 2026-03-13T02:30:00+00:00 | Status: confirmed | Name: ノイコン株式会社
+- f379f69c-8409-4e2a-aefb-7a3a764eed60: 2026-03-13T01:00:00+00:00 | Status: confirmed | Name: テスト
+- efb9b051-14e3-4ec3-8516-2087d56fb6cf: 2026-03-13T01:30:00+00:00 | Status: confirmed | Name: テスト

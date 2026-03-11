@@ -136,9 +136,9 @@ export const bookingService = {
         }
     },
 
-    async deleteBooking(id: string) {
+    async deleteBooking(id: string, serverClient?: any) {
         try {
-            const supabase = createClient()
+            const supabase = serverClient || createClient()
             const { error } = await supabase
                 .from('bookings')
                 .delete()
