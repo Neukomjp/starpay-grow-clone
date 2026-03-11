@@ -218,15 +218,15 @@ export default async function StorePublicPage(props: { params: Promise<{ slug: s
                                         <img src={item.image_url} alt={item.name} className="h-full w-full object-cover" />
                                     </div>
                                 )}
-                                <div className="flex-1">
-                                    <div className="font-medium text-lg">{item.name}</div>
-                                    <div className="text-sm text-gray-500">{item.category}</div>
+                                <div className="flex-1 min-w-0 mr-4">
+                                    <div className="font-medium text-lg truncate">{item.name}</div>
+                                    <div className="text-sm text-gray-500 truncate">{item.category}</div>
                                     {item.description && (
-                                        <div className="text-sm text-gray-600 mt-1 whitespace-pre-wrap">{item.description}</div>
+                                        <div className="text-sm text-gray-600 mt-1 whitespace-pre-wrap break-words">{item.description}</div>
                                     )}
                                     <div className="text-sm text-gray-400 mt-1">{item.duration_minutes}分</div>
                                 </div>
-                                <span className="font-bold text-lg">¥{item.price}</span>
+                                <span className="font-bold text-lg shrink-0">¥{item.price}</span>
                             </div>
                         ))
                     ) : (

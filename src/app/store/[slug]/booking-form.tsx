@@ -472,16 +472,16 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                                                     <img src={service.image_url} alt={service.name} className="h-full w-full object-cover" />
                                                 </div>
                                             )}
-                                            <Label htmlFor={service.id} className="flex-1 cursor-pointer">
-                                                <div className="flex justify-between font-medium">
-                                                    <span>{service.name}</span>
-                                                    <div className="text-right">
+                                            <Label htmlFor={service.id} className="flex-1 cursor-pointer min-w-0">
+                                                <div className="flex justify-between items-start gap-4 font-medium">
+                                                    <span className="break-words min-w-0 flex-1">{service.name}</span>
+                                                    <div className="text-right shrink-0">
                                                         <div>¥{service.price}</div>
                                                         <div className="text-xs text-gray-500">{service.duration_minutes}分</div>
                                                     </div>
                                                 </div>
                                                 {service.description && (
-                                                    <div className="text-sm font-normal text-muted-foreground mt-1 whitespace-pre-wrap">{service.description}</div>
+                                                    <div className="text-sm font-normal text-muted-foreground mt-2 whitespace-pre-wrap break-words">{service.description}</div>
                                                 )}
                                             </Label>
                                         </div>
