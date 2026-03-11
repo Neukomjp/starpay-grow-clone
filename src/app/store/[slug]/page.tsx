@@ -178,22 +178,26 @@ export default async function StorePublicPage(props: { params: Promise<{ slug: s
             )}
 
             {/* Gallery Section */}
-            {theme.gallery && theme.gallery.length > 0 && (
-                <div className="max-w-6xl mx-auto py-12 px-4">
-                    <h2 className={`text-3xl font-bold text-center mb-12 ${theme.textColor || 'text-stone-900'}`}>ギャラリー</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {theme.gallery.filter((img: string) => img).map((img: string, i: number) => (
-                            <div key={i} className="aspect-square relative rounded-lg overflow-hidden group">
-                                <img
-                                    src={img}
-                                    alt={`Gallery ${i + 1}`}
-                                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                                />
-                            </div>
-                        ))}
+            {(() => {
+                const validGallery = (theme.gallery || []).filter((img: any) => typeof img === 'string' && img.trim() !== '');
+                if (validGallery.length === 0) return null;
+                return (
+                    <div className="max-w-6xl mx-auto py-12 px-4">
+                        <h2 className={`text-3xl font-bold text-center mb-12 ${theme.textColor || 'text-stone-900'}`}>ギャラリー</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {validGallery.map((img: string, i: number) => (
+                                <div key={i} className="aspect-square relative rounded-lg overflow-hidden group">
+                                    <img
+                                        src={img}
+                                        alt={`Gallery ${i + 1}`}
+                                        className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            )}
+                );
+            })()}
 
             {/* Ticket Section */}
             <TicketSection

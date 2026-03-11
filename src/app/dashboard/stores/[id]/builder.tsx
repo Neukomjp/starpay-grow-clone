@@ -315,16 +315,20 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
                             )}
 
                             {/* Gallery Preview */}
-                            {designConfig.gallery.length > 0 && (
-                                <div className="space-y-2 border-t pt-2">
-                                    <div className="font-bold text-sm text-center">ギャラリー</div>
-                                    <div className="grid grid-cols-3 gap-1">
-                                        {designConfig.gallery.filter((img: string) => img).slice(0, 3).map((img: string, i: number) => (
-                                            <div key={i} className="aspect-square bg-gray-200 rounded bg-cover bg-center" style={{ backgroundImage: `url(${img})` }} />
-                                        ))}
+                            {(() => {
+                                const validGallery = (designConfig.gallery || []).filter((img: any) => typeof img === 'string' && img.trim() !== '');
+                                if (validGallery.length === 0) return null;
+                                return (
+                                    <div className="space-y-2 border-t pt-2">
+                                        <div className="font-bold text-sm text-center">ギャラリー</div>
+                                        <div className="grid grid-cols-3 gap-1">
+                                            {validGallery.slice(0, 3).map((img: string, i: number) => (
+                                                <div key={i} className="aspect-square bg-gray-200 rounded bg-cover bg-center" style={{ backgroundImage: `url(${img})` }} />
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                );
+                            })()}
 
                             <div className="space-y-2 border-t pt-2">
                                 <div className="h-4 w-3/4 bg-gray-100 rounded" />
