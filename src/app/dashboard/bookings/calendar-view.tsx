@@ -66,7 +66,7 @@ export function BookingCalendar({ initialBookings, storeId, defaultDate }: Booki
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="w-full md:w-[400px]">
-                    <TabsList className="w-full justify-start overflow-x-auto">
+                    <TabsList className="w-full justify-start overflow-x-auto overflow-y-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         <TabsPrimitive.Trigger value="month" className="px-3 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm rounded-md whitespace-nowrap">月 (Month)</TabsPrimitive.Trigger>
                         <TabsPrimitive.Trigger value="week" className="px-3 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm rounded-md whitespace-nowrap">週 (Week)</TabsPrimitive.Trigger>
                         <TabsPrimitive.Trigger value="day" className="px-3 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm rounded-md whitespace-nowrap">日 (Day)</TabsPrimitive.Trigger>
