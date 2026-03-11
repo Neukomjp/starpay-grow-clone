@@ -198,7 +198,9 @@ export const bookingService = {
             if (staffIds.length === 0) return []
 
             // 2. Get shifts for this day of week
-            const dayOfWeek = date.getDay()
+            // Vercel node.js servers run in UTC, so .getDay() returns UTC day. We must offset to JST (+9h)
+            const jstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000)
+            const dayOfWeek = jstDate.getUTCDay()
             const { data: shifts, error: shiftsError } = await supabase
                 .from('staff_shifts')
                 .select('*')
@@ -260,7 +262,9 @@ export const bookingService = {
         let isClosed = false
 
         if (businessDays && targetDate) {
-            const dayOfWeek = targetDate.getDay() // 0-6
+            // Force JST calculation for business day matching to avoid Vercel UTC issues
+            const jstTarget = new Date(targetDate.getTime() + 9 * 60 * 60 * 1000)
+            const dayOfWeek = jstTarget.getUTCDay() // 0-6
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const config = businessDays.find((d: any) => d.day_of_week === dayOfWeek)
             if (config) {
@@ -348,7 +352,7 @@ export const bookingService = {
                             bEnd = new Date(b.end_time)
                         } else {
                             bEnd = new Date(b.start_time)
-                            bEnd.setMinutes(bEnd.getMinutes() + 60)
+                            bEnd = new Date(bEnd.getTime() + 60 * 60 * 1000)
                         }
 
                         // Apply buffer of EXISTING booking if present
@@ -360,10 +364,10 @@ export const bookingService = {
 
                         // Compare using actual absolute time instead of local day minutes
                         // First construct the absolute Date object for the proposed slot
-                        const proposedStartDate = new Date(targetDate!)
-                        proposedStartDate.setHours(hour, min, 0, 0)
-                        const proposedEndDate = new Date(proposedStartDate)
-                        proposedEndDate.setMinutes(proposedEndDate.getMinutes() + durationMinutes)
+                        // targetDate is exactly midnight JST, so we can just add the milliseconds for hour and min
+                        const proposedStartDateMs = targetDate!.getTime() + (hour * 60 * 60 * 1000) + (min * 60 * 1000)
+                        const proposedStartDate = new Date(proposedStartDateMs)
+                        const proposedEndDate = new Date(proposedStartDateMs + (durationMinutes * 60 * 1000))
 
                         const effectiveStartTime = proposedStartDate.getTime() - (bufferBefore * 60 * 1000)
                         const effectiveEndTime = proposedEndDate.getTime() + (bufferAfter * 60 * 1000)
