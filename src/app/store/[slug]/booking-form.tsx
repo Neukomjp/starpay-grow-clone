@@ -19,7 +19,7 @@ import { createBookingAction, getAvailableTimeSlotsAction } from '@/lib/actions/
 import { paymentService, PaymentMethod } from '@/lib/services/payment'
 import { Service, Staff, ServiceOption } from '@/types/staff'
 import { toast } from 'sonner'
-import { Loader2, Ticket } from 'lucide-react'
+import { Loader2, Ticket, ChevronUp, ChevronDown } from 'lucide-react'
 import { validateCouponAction } from '@/lib/actions/coupon'
 
 import { useRouter } from 'next/navigation'
@@ -55,6 +55,8 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
     const [selectedOptions, setSelectedOptions] = useState<Record<string, ServiceOption[]>>({})
     // Map serviceId -> available options
     const [availableOptions, setAvailableOptions] = useState<Record<string, ServiceOption[]>>({})
+    // Map serviceId -> boolean (whether description is expanded)
+    const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({})
     const [selectedStaff, setSelectedStaff] = useState<string>('')
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [time, setTime] = useState<string>('')
@@ -483,7 +485,30 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                                                 </div>
                                                 {/* Bottom Row: Description */}
                                                 {service.description && (
-                                                    <div className="text-sm font-normal text-muted-foreground whitespace-pre-wrap break-words">{service.description}</div>
+                                                    <div className="mt-1">
+                                                        <button 
+                                                            type="button" 
+                                                            className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                setExpandedDescriptions(prev => ({
+                                                                    ...prev,
+                                                                    [service.id]: !prev[service.id]
+                                                                }));
+                                                            }}
+                                                        >
+                                                            {expandedDescriptions[service.id] ? (
+                                                                <>詳細を閉じる <ChevronUp className="h-3 w-3" /></>
+                                                            ) : (
+                                                                <>詳細を見る <ChevronDown className="h-3 w-3" /></>
+                                                            )}
+                                                        </button>
+                                                        {expandedDescriptions[service.id] && (
+                                                            <div className="text-sm font-normal text-muted-foreground mt-2 whitespace-pre-wrap break-words border-t pt-2 border-gray-100">
+                                                                {service.description}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 )}
                                             </Label>
                                         </div>
