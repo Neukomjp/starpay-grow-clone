@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Plus, Trash2 } from 'lucide-react'
@@ -20,7 +21,7 @@ interface MenuManagerProps {
 export function MenuManager({ storeId }: MenuManagerProps) {
     const [menuList, setMenuList] = useState<Service[]>([])
     const [isDialogOpen, setIsDialogOpen] = useState(false)
-    const [newItem, setNewItem] = useState({ name: '', price: '', category: '', duration: '60', bufferBefore: '', bufferAfter: '', imageUrl: '' })
+    const [newItem, setNewItem] = useState({ name: '', price: '', description: '', category: '', duration: '60', bufferBefore: '', bufferAfter: '', imageUrl: '' })
     const [isLoading, setIsLoading] = useState(false)
     const [selectedServiceForOptions, setSelectedServiceForOptions] = useState<Service | null>(null)
     const [editingService, setEditingService] = useState<Service | null>(null)
@@ -49,6 +50,7 @@ export function MenuManager({ storeId }: MenuManagerProps) {
                 const updatedItem = await menuService.updateService(editingService.id, {
                     name: newItem.name,
                     price: parseInt(newItem.price),
+                    description: newItem.description,
                     category: newItem.category,
                     duration_minutes: parseInt(newItem.duration) || 60,
                     buffer_time_before: parseInt(newItem.bufferBefore) || 0,
@@ -62,6 +64,7 @@ export function MenuManager({ storeId }: MenuManagerProps) {
                     store_id: storeId,
                     name: newItem.name,
                     price: parseInt(newItem.price),
+                    description: newItem.description,
                     category: newItem.category,
                     duration_minutes: parseInt(newItem.duration) || 60,
                     buffer_time_before: parseInt(newItem.bufferBefore) || 0,
@@ -71,7 +74,7 @@ export function MenuManager({ storeId }: MenuManagerProps) {
                 setMenuList([addedItem, ...menuList])
                 toast.success('メニューを追加しました')
             }
-            setNewItem({ name: '', price: '', category: '', duration: '60', bufferBefore: '', bufferAfter: '', imageUrl: '' })
+            setNewItem({ name: '', price: '', description: '', category: '', duration: '60', bufferBefore: '', bufferAfter: '', imageUrl: '' })
             setEditingService(null)
             setIsDialogOpen(false)
         } catch (error) {
@@ -84,7 +87,7 @@ export function MenuManager({ storeId }: MenuManagerProps) {
 
     const openAddDialog = () => {
         setEditingService(null)
-        setNewItem({ name: '', price: '', category: '', duration: '60', bufferBefore: '', bufferAfter: '', imageUrl: '' })
+        setNewItem({ name: '', price: '', description: '', category: '', duration: '60', bufferBefore: '', bufferAfter: '', imageUrl: '' })
         setIsDialogOpen(true)
     }
 
@@ -93,6 +96,7 @@ export function MenuManager({ storeId }: MenuManagerProps) {
         setNewItem({
             name: service.name,
             price: service.price.toString(),
+            description: service.description || '',
             category: service.category || '',
             duration: service.duration_minutes.toString(),
             bufferBefore: service.buffer_time_before?.toString() || '',
@@ -163,6 +167,17 @@ export function MenuManager({ storeId }: MenuManagerProps) {
                                             onRemove={() => setNewItem({ ...newItem, imageUrl: '' })}
                                         />
                                     </div>
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="description" className="text-right pt-2">詳細 (説明文)</Label>
+                                    <Textarea
+                                        id="description"
+                                        value={newItem.description}
+                                        onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                                        className="col-span-3"
+                                        placeholder="商品の詳細や注意事項を入力してください"
+                                        rows={3}
+                                    />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="category" className="text-right">カテゴリ</Label>

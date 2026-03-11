@@ -15,6 +15,7 @@ export type Service = {
     duration_minutes: number
     price: number
     category?: string
+    description?: string // Added for detailed menu info
     buffer_time_before?: number // minutes
     buffer_time_after?: number // minutes
     image_url?: string
