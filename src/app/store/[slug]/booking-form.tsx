@@ -472,14 +472,16 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                                                     <img src={service.image_url} alt={service.name} className="h-full w-full object-cover" />
                                                 </div>
                                             )}
-                                            <Label htmlFor={service.id} className="flex-1 cursor-pointer min-w-0">
-                                                <div className="flex justify-between items-start gap-4 font-medium mb-1">
+                                            <Label htmlFor={service.id} className="flex-1 flex flex-col gap-1 cursor-pointer min-w-0 py-1">
+                                                {/* Top Row: Name and Price/Time */}
+                                                <div className="flex justify-between items-start gap-4 font-medium">
                                                     <span className="break-words min-w-0 flex-1 leading-snug">{service.name}</span>
                                                     <div className="text-right shrink-0">
                                                         <div>¥{service.price}</div>
                                                         <div className="text-xs text-gray-500">{service.duration_minutes}分</div>
                                                     </div>
                                                 </div>
+                                                {/* Bottom Row: Description */}
                                                 {service.description && (
                                                     <div className="text-sm font-normal text-muted-foreground whitespace-pre-wrap break-words">{service.description}</div>
                                                 )}
