@@ -14,6 +14,7 @@ export type Organization = {
         remove_branding?: boolean
     },
     stripe_account_id?: string | null,
+    stripe_customer_id?: string | null,
     created_at: string
     updated_at: string
 }

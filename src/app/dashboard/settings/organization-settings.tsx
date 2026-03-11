@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { updateOrganizationAction, getOrganizationMembersAction, updateMemberRoleAction, removeMemberAction } from '@/lib/actions/organization'
+import { createBillingPortalSessionAction } from '@/lib/actions/billing'
 import { useState, useEffect } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -37,6 +38,7 @@ export function OrganizationSettings() {
     const [inviteEmail, setInviteEmail] = useState('')
     const [inviteRole, setInviteRole] = useState('member')
     const [inviting, setInviting] = useState(false)
+    const [loadingBilling, setLoadingBilling] = useState(false)
 
     useEffect(() => {
         if (organization) {
@@ -173,8 +175,28 @@ export function OrganizationSettings() {
                     </div>
                     {canManageBilling(organization.role) && (
                         <div className="pt-2">
-                            <Button variant="outline" onClick={() => toast.info('Billing portal mock')}>
-                                プランを変更 / 請求管理
+                            <Button 
+                                variant="outline" 
+                                disabled={loadingBilling}
+                                onClick={async () => {
+                                    try {
+                                        setLoadingBilling(true)
+                                        const res = await createBillingPortalSessionAction()
+                                        if (res.url) {
+                                            window.location.href = res.url
+                                        } else {
+                                            toast.error(res.error || '請求管理画面の表示に失敗しました')
+                                        }
+                                    } catch (error) {
+                                        toast.error('エラーが発生しました')
+                                        console.error(error)
+                                    } finally {
+                                        setLoadingBilling(false)
+                                    }
+                                }}
+                            >
+                                {loadingBilling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                {loadingBilling ? 'リダイレクト中...' : 'プランを変更 / 請求管理'}
                             </Button>
                         </div>
                     )}
