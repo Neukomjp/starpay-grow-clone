@@ -182,7 +182,7 @@ export default async function StorePublicPage(props: { params: Promise<{ slug: s
                 <div className="max-w-6xl mx-auto py-12 px-4">
                     <h2 className={`text-3xl font-bold text-center mb-12 ${theme.textColor || 'text-stone-900'}`}>ギャラリー</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {theme.gallery.map((img: string, i: number) => (
+                        {theme.gallery.filter((img: string) => img).map((img: string, i: number) => (
                             <div key={i} className="aspect-square relative rounded-lg overflow-hidden group">
                                 <img
                                     src={img}
