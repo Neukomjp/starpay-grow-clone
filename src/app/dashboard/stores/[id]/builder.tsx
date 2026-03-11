@@ -39,11 +39,11 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
             content: '当店はお客様に最高のリラックス空間とサービスを提供することを目指しています。厳選された素材と確かな技術で、あなたの日常を少しだけ豊かにするお手伝いをさせてください。',
             imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop'
         },
-        gallery: existingConfig.gallery || [
+        gallery: (existingConfig.gallery || [
             'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop',
             'https://images.unsplash.com/photo-1560066984-35d09450c110?q=80&w=1000&auto=format&fit=crop',
             'https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=1000&auto=format&fit=crop'
-        ],
+        ]).filter((img: any) => typeof img === 'string' && img.trim() !== ''),
         seo: existingConfig.seo || {
             title: '',
             description: '',
@@ -64,7 +64,7 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
                     welcomeMessage: designConfig.welcomeMessage,
                     showTitle: designConfig.showTitle,
                     about: designConfig.about,
-                    gallery: designConfig.gallery,
+                    gallery: designConfig.gallery.filter((img: any) => typeof img === 'string' && img.trim() !== ''),
                     seo: designConfig.seo,
                     // Preserve other keys if any
                     ...existingConfig,
