@@ -436,7 +436,7 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="py-4">
+                <div className="py-4 max-h-[65vh] overflow-y-auto px-2">
                     {/* Progress Indicator */}
                     <div className="flex justify-between mb-6 text-sm text-gray-500">
                         <span className={step >= 1 ? 'font-bold' : ''} style={{ color: step >= 1 ? (themeColor || '#78350f') : undefined }}>1. メニュー</span>
