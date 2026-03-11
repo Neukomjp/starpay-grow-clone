@@ -18,6 +18,13 @@ export type StoreData = {
             subject: string
             body: string // HTML or text template
         }
+        custom_domain?: {
+            id: string
+            name: string
+            status: string
+            records: any[]
+            region: string
+        }
     }
     is_published: boolean
     created_at?: string
