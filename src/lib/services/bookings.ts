@@ -351,18 +351,25 @@ export const bookingService = {
                             bEnd.setMinutes(bEnd.getMinutes() + 60)
                         }
 
-                        const bStartMin = bStart.getHours() * 60 + bStart.getMinutes()
-                        const bEndMin = bEnd.getHours() * 60 + bEnd.getMinutes()
-
                         // Apply buffer of EXISTING booking if present
                         const bBufferBefore = b.buffer_minutes_before || 0
                         const bBufferAfter = b.buffer_minutes_after || 0
 
-                        const bEffectiveStartMin = bStartMin - bBufferBefore
-                        const bEffectiveEndMin = bEndMin + bBufferAfter
+                        const bEffectiveStartTime = bStart.getTime() - (bBufferBefore * 60 * 1000)
+                        const bEffectiveEndTime = bEnd.getTime() + (bBufferAfter * 60 * 1000)
 
-                        // Overlap: (StartA < EndB) && (EndA > StartB)
-                        return (effectiveStartMin < bEffectiveEndMin) && (effectiveEndMin > bEffectiveStartMin)
+                        // Compare using actual absolute time instead of local day minutes
+                        // First construct the absolute Date object for the proposed slot
+                        const proposedStartDate = new Date(targetDate!)
+                        proposedStartDate.setHours(hour, min, 0, 0)
+                        const proposedEndDate = new Date(proposedStartDate)
+                        proposedEndDate.setMinutes(proposedEndDate.getMinutes() + durationMinutes)
+
+                        const effectiveStartTime = proposedStartDate.getTime() - (bufferBefore * 60 * 1000)
+                        const effectiveEndTime = proposedEndDate.getTime() + (bufferAfter * 60 * 1000)
+
+                        // Overlap condition: (StartA < EndB) && (EndA > StartB)
+                        return (effectiveStartTime < bEffectiveEndTime) && (effectiveEndTime > bEffectiveStartTime)
                     })
 
                     return !hasOverlap
