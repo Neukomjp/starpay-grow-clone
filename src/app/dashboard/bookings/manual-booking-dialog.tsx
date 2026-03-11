@@ -19,6 +19,7 @@ import { Customer } from '@/lib/types/customer'
 import { toast } from 'sonner'
 import { Loader2, Plus } from 'lucide-react'
 import { ja } from 'date-fns/locale'
+import { useBookingStore } from '@/store/useBookingStore'
 
 interface ManualBookingDialogProps {
     storeId: string
@@ -29,6 +30,8 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [step, setStep] = useState(1)
+
+    const { fetchBookings } = useBookingStore()
 
     // Data
     const [services, setServices] = useState<Service[]>([])

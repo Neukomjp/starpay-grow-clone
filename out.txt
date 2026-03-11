@@ -1,0 +1,9 @@
+[dotenv@17.3.1] injecting env (3) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Store: Demostore Tokyo (22222222-2222-2222-2222-222222222221) -> Staff count: 4
+Store: Demostore Osaka (22222222-2222-2222-2222-222222222222) -> Staff count: 0
+Store: テストカンパニー (ac623251-f853-4445-8d07-14997ea3e368) -> Staff count: 0
+Store: テストカンパニー (b6bd6877-f2dc-407e-813d-bded75f6cc89) -> Staff count: 0
+Store: テストカンパニー (49341719-2364-491d-8e19-be73c395e7ca) -> Staff count: 0
+Store: テストカンパニー (13645854-3109-4497-92f7-98c5b8fcbd80) -> Staff count: 0
+Store: テストサロン (595e5acd-a6d8-4168-acfa-d7f89f6ecc67) -> Staff count: 0
+Store: テストカンパニー (0ad7d7d8-b2e4-4b63-9729-2f1a6428309d) -> Staff count: 1

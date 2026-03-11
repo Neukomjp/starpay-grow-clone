@@ -1,0 +1,86 @@
+[dotenv@17.3.1] injecting env (3) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Store: {
+  "id": "0ad7d7d8-b2e4-4b63-9729-2f1a6428309d",
+  "organization_id": "1546d165-a941-412d-9baa-817d9aac721e",
+  "merchant_id": "b45fd5fd-46e3-48e7-98e2-402d31f62c5a",
+  "name": "テストカンパニー",
+  "slug": "test-0ad7d7d8",
+  "description": "",
+  "address": "大阪市北区中崎西",
+  "phone": "090-1234-5678",
+  "logo_url": "",
+  "cover_image_url": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=2047&auto=format&fit=crop",
+  "theme_color": "#78350f",
+  "booking_interval_minutes": 30,
+  "theme_config": {
+    "seo": {
+      "title": "",
+      "ogImage": "",
+      "description": ""
+    },
+    "about": {
+      "title": "私たちについて",
+      "content": "当店はお客様に最高のリラックス空間とサービスを提供することを目指しています。厳選された素材と確かな技術で、あなたの日常を少しだけ豊かにするお手伝いをさせてください。",
+      "imageUrl": "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop"
+    },
+    "theme": "modern",
+    "gallery": [
+      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=1000&auto=format&fit=crop"
+    ],
+    "showTitle": true,
+    "updatedAt": "2026-03-11T10:18:00.027Z",
+    "fontFamily": "sans",
+    "welcomeMessage": ""
+  },
+  "email_config": {
+    "sender_email": "info@neukom.jp"
+  },
+  "is_published": true,
+  "business_days": [
+    {
+      "end_time": "19:00",
+      "is_closed": false,
+      "start_time": "10:00",
+      "day_of_week": 0
+    },
+    {
+      "end_time": "19:00",
+      "is_closed": false,
+      "start_time": "10:00",
+      "day_of_week": 1
+    },
+    {
+      "end_time": "19:00",
+      "is_closed": false,
+      "start_time": "10:00",
+      "day_of_week": 2
+    },
+    {
+      "end_time": "19:00",
+      "is_closed": false,
+      "start_time": "10:00",
+      "day_of_week": 3
+    },
+    {
+      "end_time": "19:00",
+      "is_closed": false,
+      "start_time": "10:00",
+      "day_of_week": 4
+    },
+    {
+      "end_time": "19:00",
+      "is_closed": false,
+      "start_time": "10:00",
+      "day_of_week": 5
+    },
+    {
+      "end_time": "19:00",
+      "is_closed": false,
+      "start_time": "10:00",
+      "day_of_week": 6
+    }
+  ],
+  "created_at": "2026-02-20T14:19:39.306582+00:00",
+  "stripe_account_id": null
+}

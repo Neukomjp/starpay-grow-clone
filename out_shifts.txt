@@ -1,0 +1,74 @@
+[dotenv@17.3.1] injecting env (3) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Staff for store: [ { id: 'e1579c5a-e95c-4984-a8de-1705516e528d', name: 'テストスタッフ' } ]
+Shifts for these staff: [
+  {
+    id: '827a7535-b208-4372-884c-5f16d3987c43',
+    staff_id: 'e1579c5a-e95c-4984-a8de-1705516e528d',
+    day_of_week: 0,
+    start_time: '10:00:00',
+    end_time: '18:00:00',
+    break_start_time: null,
+    break_end_time: null,
+    is_holiday: true
+  },
+  {
+    id: 'be081ad1-a649-41a2-a20c-d384f7497078',
+    staff_id: 'e1579c5a-e95c-4984-a8de-1705516e528d',
+    day_of_week: 1,
+    start_time: '10:00:00',
+    end_time: '18:00:00',
+    break_start_time: null,
+    break_end_time: null,
+    is_holiday: false
+  },
+  {
+    id: 'a06e27ce-a5f5-4938-8d11-22831b40ee64',
+    staff_id: 'e1579c5a-e95c-4984-a8de-1705516e528d',
+    day_of_week: 2,
+    start_time: '10:00:00',
+    end_time: '18:00:00',
+    break_start_time: null,
+    break_end_time: null,
+    is_holiday: false
+  },
+  {
+    id: '04c8fe13-3af7-4745-9330-13bcbbe08eed',
+    staff_id: 'e1579c5a-e95c-4984-a8de-1705516e528d',
+    day_of_week: 3,
+    start_time: '10:00:00',
+    end_time: '18:00:00',
+    break_start_time: null,
+    break_end_time: null,
+    is_holiday: false
+  },
+  {
+    id: '1db088b2-a466-4b0c-a752-48ea93dd8604',
+    staff_id: 'e1579c5a-e95c-4984-a8de-1705516e528d',
+    day_of_week: 4,
+    start_time: '10:00:00',
+    end_time: '18:00:00',
+    break_start_time: null,
+    break_end_time: null,
+    is_holiday: false
+  },
+  {
+    id: 'f0ef5d4c-941c-44cb-85e8-5f87e7da4ba9',
+    staff_id: 'e1579c5a-e95c-4984-a8de-1705516e528d',
+    day_of_week: 5,
+    start_time: '10:00:00',
+    end_time: '18:00:00',
+    break_start_time: null,
+    break_end_time: null,
+    is_holiday: false
+  },
+  {
+    id: '6a65437c-2132-4f3f-a5c4-ae762dd9262a',
+    staff_id: 'e1579c5a-e95c-4984-a8de-1705516e528d',
+    day_of_week: 6,
+    start_time: '10:00:00',
+    end_time: '18:00:00',
+    break_start_time: null,
+    break_end_time: null,
+    is_holiday: true
+  }
+]

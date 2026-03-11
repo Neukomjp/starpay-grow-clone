@@ -15,6 +15,7 @@ import { Service, Staff, ServiceOption } from '@/types/staff'
 import { toast } from 'sonner'
 import { Loader2, Pencil, Trash2, XCircle, CheckCircle2 } from 'lucide-react'
 import { ja } from 'date-fns/locale'
+import { useBookingStore } from '@/store/useBookingStore'
 
 interface EditBookingDialogProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,6 +31,8 @@ export function EditBookingDialog({ booking, storeId, trigger, onOpenChange }: E
     const [step, setStep] = useState(1)
     const [isStatusUpdating, setIsStatusUpdating] = useState(false)
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
+    const { fetchBookings } = useBookingStore()
 
     // Data
     const [services, setServices] = useState<Service[]>([])
@@ -190,6 +193,7 @@ export function EditBookingDialog({ booking, storeId, trigger, onOpenChange }: E
             })
 
             toast.success('予約を更新しました')
+            fetchBookings(storeId)
             setOpen(false)
             if (onOpenChange) onOpenChange(false)
         } catch (error) {
@@ -205,6 +209,7 @@ export function EditBookingDialog({ booking, storeId, trigger, onOpenChange }: E
         try {
             await updateStatusAction(booking.id, newStatus)
             toast.success(`ステータスを更新しました`)
+            fetchBookings(storeId)
             setOpen(false)
             if (onOpenChange) onOpenChange(false)
         } catch (error) {
@@ -220,6 +225,7 @@ export function EditBookingDialog({ booking, storeId, trigger, onOpenChange }: E
         try {
             await deleteBookingAction(booking.id)
             toast.success('予約データを削除しました')
+            fetchBookings(storeId)
             setOpen(false)
             setIsDeleteDialogOpen(false)
             if (onOpenChange) onOpenChange(false)
