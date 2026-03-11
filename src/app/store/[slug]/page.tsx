@@ -221,6 +221,9 @@ export default async function StorePublicPage(props: { params: Promise<{ slug: s
                                 <div className="flex-1">
                                     <div className="font-medium text-lg">{item.name}</div>
                                     <div className="text-sm text-gray-500">{item.category}</div>
+                                    {item.description && (
+                                        <div className="text-sm text-gray-600 mt-1 whitespace-pre-wrap">{item.description}</div>
+                                    )}
                                     <div className="text-sm text-gray-400 mt-1">{item.duration_minutes}分</div>
                                 </div>
                                 <span className="font-bold text-lg">¥{item.price}</span>

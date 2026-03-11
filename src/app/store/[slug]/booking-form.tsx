@@ -472,12 +472,17 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                                                     <img src={service.image_url} alt={service.name} className="h-full w-full object-cover" />
                                                 </div>
                                             )}
-                                            <Label htmlFor={service.id} className="flex-1 cursor-pointer flex justify-between font-medium">
-                                                <span>{service.name}</span>
-                                                <div className="text-right">
-                                                    <div>¥{service.price}</div>
-                                                    <div className="text-xs text-gray-500">{service.duration_minutes}分</div>
+                                            <Label htmlFor={service.id} className="flex-1 cursor-pointer">
+                                                <div className="flex justify-between font-medium">
+                                                    <span>{service.name}</span>
+                                                    <div className="text-right">
+                                                        <div>¥{service.price}</div>
+                                                        <div className="text-xs text-gray-500">{service.duration_minutes}分</div>
+                                                    </div>
                                                 </div>
+                                                {service.description && (
+                                                    <div className="text-sm font-normal text-muted-foreground mt-1 whitespace-pre-wrap">{service.description}</div>
+                                                )}
                                             </Label>
                                         </div>
 
