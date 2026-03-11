@@ -6,18 +6,54 @@
 - Environments: .env.local
 
   Creating an optimized production build ...
-笨・Compiled successfully in 5.1s
-  Running TypeScript ...
-Failed to compile.
 
-./src/app/dashboard/coupons/coupon-toggle.tsx:17:54
-Type error: Expected 1 arguments, but got 2.
+> Build error occurred
+Error: Turbopack build failed with 3 errors:
+./src/app/dashboard/loading.tsx:1:1
+Module not found: Can't resolve '@/components/ui/skeleton'
+> 1 | import { Skeleton } from "@/components/ui/skeleton"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 |
+  3 | export default function DashboardLoading() {
+  4 |     return (
 
-  15 |         const newStatus = !isActive
-  16 |         try {
-> 17 |             await toggleCouponStatusAction(couponId, newStatus)
-     |                                                      ^
-  18 |             setIsActive(newStatus)
-  19 |             toast.success(newStatus ? '繧ｯ繝ｼ繝昴Φ繧呈怏蜉ｹ縺ｫ縺励∪縺励◆' : '繧ｯ繝ｼ繝昴Φ繧堤┌蜉ｹ縺ｫ縺励∪縺励◆')
-  20 |         } catch {
-Next.js build worker exited with code: 1 and signal: null
+Import map: aliased to relative './src/components/ui/skeleton' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/app/mypage/loading.tsx:1:1
+Module not found: Can't resolve '@/components/ui/skeleton'
+> 1 | import { Skeleton } from "@/components/ui/skeleton"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import { Card, CardHeader, CardContent } from "@/components/ui/card"
+  3 |
+  4 | export default function MyPageLoading() {
+
+Import map: aliased to relative './src/components/ui/skeleton' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/app/store/[slug]/loading.tsx:1:1
+Module not found: Can't resolve '@/components/ui/skeleton'
+> 1 | import { Skeleton } from "@/components/ui/skeleton"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 |
+  3 | export default function StoreLoading() {
+  4 |     return (
+
+Import map: aliased to relative './src/components/ui/skeleton' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./src/app/dashboard/loading.tsx:1:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/app/mypage/loading.tsx:1:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/app/store/[slug]/loading.tsx:1:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
