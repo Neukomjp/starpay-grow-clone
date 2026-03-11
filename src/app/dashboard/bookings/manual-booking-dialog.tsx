@@ -268,9 +268,9 @@ export function ManualBookingDialog({ storeId, onBookingCreated }: ManualBooking
             resetForm()
             if (onBookingCreated) onBookingCreated()
 
-        } catch (error) {
+        } catch (error: any) {
             console.error(error)
-            toast.error('予約作成に失敗しました')
+            toast.error(error.message || '予約作成に失敗しました')
         } finally {
             setLoading(false)
         }

@@ -45,9 +45,53 @@ export const bookingService = {
     },
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async createBooking(booking: Omit<Booking, 'id' | 'status'>, customClient?: any) {
+    async createBooking(booking: any, customClient?: any) {
         try {
             const supabase = customClient || createClient()
+            
+            // 1. Check for double booking
+            if (booking.staff_id) {
+                // Fetch bookings for this staff on this day
+                const checkDateStart = new Date(booking.start_time)
+                checkDateStart.setHours(0, 0, 0, 0)
+                const checkDateEnd = new Date(booking.start_time)
+                checkDateEnd.setHours(23, 59, 59, 999)
+
+                const { data: existingBookings, error: fetchError } = await supabase
+                    .from('bookings')
+                    .select('start_time, end_time, buffer_minutes_before, buffer_minutes_after')
+                    .eq('store_id', booking.store_id)
+                    .eq('staff_id', booking.staff_id)
+                    .neq('status', 'cancelled')
+                    .gte('start_time', checkDateStart.toISOString())
+                    .lte('start_time', checkDateEnd.toISOString())
+
+                if (fetchError) throw new Error(fetchError.message)
+
+                if (existingBookings && existingBookings.length > 0) {
+                    const newStart = new Date(booking.start_time)
+                    const newEnd = new Date(booking.end_time)
+                    
+                    const newEffectiveStartMin = newStart.getHours() * 60 + newStart.getMinutes() - (booking.buffer_minutes_before || 0)
+                    const newEffectiveEndMin = newEnd.getHours() * 60 + newEnd.getMinutes() + (booking.buffer_minutes_after || 0)
+
+                    const hasOverlap = existingBookings.some((b: any) => {
+                        const bStart = new Date(b.start_time)
+                        const bEnd = new Date(b.end_time || b.start_time) // fallback
+                        
+                        const bEffectiveStartMin = bStart.getHours() * 60 + bStart.getMinutes() - (b.buffer_minutes_before || 0)
+                        const bEffectiveEndMin = bEnd.getHours() * 60 + bEnd.getMinutes() + (b.buffer_minutes_after || 0)
+
+                        // Overlap condition: (StartA < EndB) && (EndA > StartB)
+                        return (newEffectiveStartMin < bEffectiveEndMin) && (newEffectiveEndMin > bEffectiveStartMin)
+                    })
+
+                    if (hasOverlap) {
+                        throw new Error('指定された日時は別の予約が入ってしまいました。お手数ですが、別の日時を再度お選びください。')
+                    }
+                }
+            }
+
             const { data, error } = await supabase
                 .from('bookings')
                 .insert([booking])

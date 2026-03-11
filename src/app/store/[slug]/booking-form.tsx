@@ -335,9 +335,9 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
             setOpen(false)
             resetForm()
             router.push(`/store/${slug}/thanks`)
-        } catch (error) {
+        } catch (error: any) {
             console.error('Booking failed:', error)
-            toast.error('予約に失敗しました。もう一度お試しください。')
+            toast.error(error.message || '予約に失敗しました。もう一度お試しください。')
         } finally {
             setLoading(false)
             setPaymentInProgress(false)
