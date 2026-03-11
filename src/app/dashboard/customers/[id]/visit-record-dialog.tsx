@@ -14,6 +14,7 @@ import { CalendarIcon, Loader2, Plus, X } from 'lucide-react'
 import { createVisitRecordAction } from '@/lib/actions/visit'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
 
 interface VisitRecordDialogProps {
     storeId: string
@@ -31,7 +32,40 @@ export function VisitRecordDialog({ storeId, customerId, bookingId, staffId, onR
     const [content, setContent] = useState('')
     const [tags, setTags] = useState<string[]>([])
     const [tagInput, setTagInput] = useState('')
-    const [photos, setPhotos] = useState<string[]>([]) // Mock URLs
+    const [photos, setPhotos] = useState<string[]>([])
+    const [uploadingImage, setUploadingImage] = useState(false)
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        try {
+            setUploadingImage(true)
+            const supabase = createClient()
+            const fileExt = file.name.split('.').pop()
+            const fileName = `${customerId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+
+            const { error: uploadError } = await supabase.storage
+                .from('customer_records')
+                .upload(fileName, file)
+
+            if (uploadError) throw uploadError
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('customer_records')
+                .getPublicUrl(fileName)
+
+            setPhotos([...photos, publicUrl])
+            toast.success('画像をアップロードしました')
+        } catch (error: any) {
+            console.error('Upload Error:', error)
+            toast.error(error.message || '画像のアップロードに失敗しました')
+        } finally {
+            setUploadingImage(false)
+            // Reset input
+            e.target.value = ''
+        }
+    }
 
     const handleAddTag = () => {
         if (tagInput.trim() && !tags.includes(tagInput.trim())) {
@@ -159,11 +193,33 @@ export function VisitRecordDialog({ storeId, customerId, bookingId, staffId, onR
                         </div>
                     </div>
 
-                    {/* Photo upload placeholder */}
                     <div className="grid gap-2">
-                        <Label>写真 (モック)</Label>
-                        <div className="border-2 border-dashed rounded-md p-4 text-center text-sm text-muted-foreground">
-                            写真をドラッグ＆ドロップ (未実装)
+                        <Label>写真</Label>
+                        <div className="flex flex-col gap-2">
+                            <Input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={handleImageUpload} 
+                                disabled={uploadingImage}
+                            />
+                            {uploadingImage && <p className="text-sm text-muted-foreground flex items-center"><Loader2 className="mr-2 h-3 w-3 animate-spin"/> アップロード中...</p>}
+                            
+                            {photos.length > 0 && (
+                                <div className="flex gap-2 overflow-x-auto py-2">
+                                    {photos.map((url, i) => (
+                                        <div key={i} className="relative aspect-square h-20 bg-muted rounded overflow-hidden">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={url} alt="カルテ画像" className="object-cover w-full h-full" />
+                                            <button 
+                                                className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5"
+                                                onClick={() => setPhotos(photos.filter(p => p !== url))}
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

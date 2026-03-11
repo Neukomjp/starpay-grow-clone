@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CustomerTicket, TicketMaster } from '@/lib/types/ticket'
 import { Customer } from '@/lib/types/customer'
+import { VisitRecord } from '@/lib/types/visit-record'
 import { consumeTicketAction, issueTicketToCustomerAction } from '@/lib/actions/tickets'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Ticket } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
@@ -18,9 +20,10 @@ interface CustomerDetailsProps {
     customer: Customer
     initialTickets: CustomerTicket[]
     ticketMasters: TicketMaster[]
+    visitRecords: VisitRecord[]
 }
 
-export function CustomerDetails({ customer, initialTickets, ticketMasters }: CustomerDetailsProps) {
+export function CustomerDetails({ customer, initialTickets, ticketMasters, visitRecords }: CustomerDetailsProps) {
     const [tickets, setTickets] = useState<CustomerTicket[]>(initialTickets)
     const [isGrantDialogOpen, setIsGrantDialogOpen] = useState(false)
     const [selectedMasterId, setSelectedMasterId] = useState<string>('')
@@ -73,7 +76,7 @@ export function CustomerDetails({ customer, initialTickets, ticketMasters }: Cus
                 <TabsList>
                     <TabsTrigger value="overview">基本情報</TabsTrigger>
                     <TabsTrigger value="tickets">保有回数券</TabsTrigger>
-                    {/* <TabsTrigger value="history">来店履歴</TabsTrigger> */}
+                    <TabsTrigger value="history">来店履歴</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview" className="space-y-4">
@@ -201,6 +204,53 @@ export function CustomerDetails({ customer, initialTickets, ticketMasters }: Cus
                             </div>
                         )}
                     </div>
+                </TabsContent>
+
+                <TabsContent value="history" className="space-y-4">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-medium">来店履歴 ({visitRecords.length}件)</h3>
+                    </div>
+                    {visitRecords.length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground bg-slate-50 rounded-lg border border-dashed">
+                            来店履歴はまだありません
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {visitRecords.map((record) => (
+                                <Card key={record.id}>
+                                    <CardHeader className="pb-2">
+                                        <div className="flex justify-between">
+                                            <CardTitle className="text-md font-semibold">
+                                                {new Date(record.visit_date).toLocaleDateString('ja-JP')}
+                                            </CardTitle>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="space-y-3">
+                                        <div className="text-sm p-3 bg-slate-50 rounded-md whitespace-pre-wrap">
+                                            {record.content}
+                                        </div>
+                                        {record.tags && record.tags.length > 0 && (
+                                            <div className="flex flex-wrap gap-1">
+                                                {record.tags.map(tag => (
+                                                    <Badge key={tag} variant="secondary" className="font-normal text-xs">#{tag}</Badge>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {record.photos && record.photos.length > 0 && (
+                                            <div className="flex gap-2 overflow-x-auto pt-2">
+                                                {record.photos.map((photo, j) => (
+                                                    <div key={Math.random()} className="relative shrink-0 w-24 h-24 rounded-md overflow-hidden bg-slate-100 border">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img src={photo} alt={`カルテ画像 ${j+1}`} className="object-cover w-full h-full" />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    )}
                 </TabsContent>
             </Tabs>
         </div>
