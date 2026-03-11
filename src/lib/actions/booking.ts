@@ -15,8 +15,6 @@ export async function getAvailableTimeSlotsAction(
     bufferAfter: number = 0
 ) {
     unstable_noStore();
-    unstable_noStore();
-    unstable_noStore();
     const supabase = await createClient()
     return await bookingService.getAvailableTimeSlots(storeId, date, durationMinutes, staffId, bufferBefore, bufferAfter, supabase)
 }
@@ -29,6 +27,7 @@ export async function getWeeklyAvailabilityAction(
     bufferBefore: number = 0,
     bufferAfter: number = 0
 ) {
+    unstable_noStore();
     const supabase = await createClient()
     return await bookingService.getWeeklyAvailability(storeId, startDate, durationMinutes, staffId, bufferBefore, bufferAfter, 7, supabase)
 }
