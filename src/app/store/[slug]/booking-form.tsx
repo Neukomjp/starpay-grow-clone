@@ -60,6 +60,7 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
     const [selectedStaff, setSelectedStaff] = useState<string>('')
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [time, setTime] = useState<string>('')
+    const [forceShowCalendar, setForceShowCalendar] = useState(false)
     const [customerName, setCustomerName] = useState('')
     const [customerEmail, setCustomerEmail] = useState('')
     const [customerPhone, setCustomerPhone] = useState('')
@@ -126,6 +127,7 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
     useEffect(() => {
         if (open) {
             loadData()
+            setForceShowCalendar(false)
             if (initialDate) {
                 setDate(initialDate)
             }
@@ -598,7 +600,19 @@ export function BookingForm({ storeId, storeName, slug, themeColor, isOpen, onOp
                             <Label>日時を選択してください</Label>
 
                             {/* Calculate parameters for WeeklyCalendar */}
-                            {(() => {
+                            {initialDate && !forceShowCalendar ? (
+                                <div className="border rounded-md p-6 bg-slate-50 text-center space-y-4">
+                                    <p className="text-stone-600 font-medium pb-2">空き状況カレンダーで選択した日時にて予約を進めます。</p>
+                                    <div className="text-2xl font-bold text-stone-800">
+                                        {date?.toLocaleDateString()} {time}
+                                    </div>
+                                    <div className="pt-4">
+                                        <Button variant="outline" onClick={() => setForceShowCalendar(true)}>
+                                            日時を変更する
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (() => {
                                 const selectedServiceObjects = services.filter(s => selectedServices.includes(s.id))
                                 const primaryService = selectedServiceObjects[0]
                                 const allServiceOptions = Object.values(selectedOptions).flat()
