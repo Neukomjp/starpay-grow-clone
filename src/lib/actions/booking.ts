@@ -2,7 +2,7 @@
 'use server'
 
 import { bookingService } from '@/lib/services/bookings'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, unstable_noStore } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
 
@@ -14,6 +14,9 @@ export async function getAvailableTimeSlotsAction(
     bufferBefore: number = 0,
     bufferAfter: number = 0
 ) {
+    unstable_noStore();
+    unstable_noStore();
+    unstable_noStore();
     const supabase = await createClient()
     return await bookingService.getAvailableTimeSlots(storeId, date, durationMinutes, staffId, bufferBefore, bufferAfter, supabase)
 }
