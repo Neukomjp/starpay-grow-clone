@@ -211,17 +211,17 @@ export const bookingService = {
             if (!shifts || shifts.length === 0) return []
 
             // 3. Get existing bookings for this date and these staff
-            const startOfDay = new Date(date)
-            startOfDay.setHours(0, 0, 0, 0)
-            const endOfDay = new Date(date)
-            endOfDay.setHours(23, 59, 59, 999)
+            // Assuming `date` is a Date object representing the start of the day in JST (e.g. 15:00 UTC)
+            const startOfDayMs = date.getTime();
+            const startOfDayStr = new Date(startOfDayMs).toISOString(); // e.g. 15:00 UTC
+            const endOfDayStr = new Date(startOfDayMs + 24 * 60 * 60 * 1000 - 1).toISOString(); // e.g. 14:59:59.999 UTC next day
 
             const { data: bookings, error: bookingsError } = await supabase
                 .from('bookings')
                 .select('start_time, end_time, staff_id, status, buffer_minutes_before, buffer_minutes_after')
                 .in('staff_id', staffIds)
-                .gte('start_time', startOfDay.toISOString())
-                .lte('start_time', endOfDay.toISOString())
+                .gte('start_time', startOfDayStr)
+                .lte('start_time', endOfDayStr)
                 .neq('status', 'cancelled')
 
             if (bookingsError) throw bookingsError
@@ -455,16 +455,19 @@ export const bookingService = {
         const promises = []
 
         for (let i = 0; i < days; i++) {
-            const date = new Date(startDate)
-            date.setDate(date.getDate() + i)
+            // startDate is assumed to be 00:00:00 JST for the first day (e.g. 15:00:00.000Z the previous day)
+            const absoluteStartMs = startDate.getTime()
+            const date = new Date(absoluteStartMs + i * 24 * 60 * 60 * 1000)
 
             promises.push(
                 this.getAvailableTimeSlots(storeId, date, durationMinutes, staffId, bufferBefore, bufferAfter, customClient)
                     .then(slots => {
-                        // normalize dateStr to YYYY-MM-DD for easier key usage
-                        const y = date.getFullYear()
-                        const m = (date.getMonth() + 1).toString().padStart(2, '0')
-                        const d = date.getDate().toString().padStart(2, '0')
+                        // Force JST calculation for the dictionary key
+                        // Add 9 hours to the absolute ms so UTC standard methods return JST values
+                        const jstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000)
+                        const y = jstDate.getUTCFullYear()
+                        const m = (jstDate.getUTCMonth() + 1).toString().padStart(2, '0')
+                        const d = jstDate.getUTCDate().toString().padStart(2, '0')
                         const key = `${y}-${m}-${d}`
                         availability[key] = slots
                     })
