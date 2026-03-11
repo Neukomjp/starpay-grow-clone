@@ -59,6 +59,7 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
                 cover_image_url: designConfig.heroImage,
                 logo_url: designConfig.logoUrl,
                 theme_config: {
+                    ...existingConfig,
                     theme: designConfig.theme,
                     fontFamily: designConfig.fontFamily,
                     welcomeMessage: designConfig.welcomeMessage,
@@ -66,9 +67,6 @@ export function StorePageBuilder({ store }: StorePageBuilderProps) {
                     about: designConfig.about,
                     gallery: designConfig.gallery.filter((img: any) => typeof img === 'string' && img.trim() !== ''),
                     seo: designConfig.seo,
-                    // Preserve other keys if any
-                    ...existingConfig,
-                    // Overwrites
                     updatedAt: new Date().toISOString()
                 }
             })
