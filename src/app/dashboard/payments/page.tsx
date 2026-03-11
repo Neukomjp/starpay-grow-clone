@@ -6,18 +6,47 @@ import { Badge } from '@/components/ui/badge'
 import { useCurrentOrganization } from '@/hooks/use-current-organization'
 import { canViewPayments } from '@/lib/rbac'
 import { Loader2 } from 'lucide-react'
-
-// Mock Data
-const transactions = [
-    { id: 'tx_1', date: '2024-02-18 10:30', amount: 1200, method: 'PayPay', status: 'Success' },
-    { id: 'tx_2', date: '2024-02-18 11:15', amount: 550, method: 'LINE Pay', status: 'Success' },
-    { id: 'tx_3', date: '2024-02-18 12:00', amount: 3000, method: 'Credit Card', status: 'Failed' },
-]
+import { useState, useEffect } from 'react'
+import { getStoresAction } from '@/lib/actions/store'
+import {
+    getDashboardSalesSummaryAction,
+    getRecentTransactionsAction,
+    DashboardSalesSummary,
+    RecentTransaction
+} from '@/lib/actions/sales'
 
 export default function PaymentsPage() {
     const { organization, loading: orgLoading } = useCurrentOrganization()
+    const [salesSummary, setSalesSummary] = useState<DashboardSalesSummary | null>(null)
+    const [recentTx, setRecentTx] = useState<RecentTransaction[]>([])
+    const [fetching, setFetching] = useState(true)
 
-    if (orgLoading) {
+    useEffect(() => {
+        if (!organization) return
+
+        const fetchData = async () => {
+            try {
+                const stores = await getStoresAction()
+                if (stores && stores.length > 0) {
+                    const storeId = stores[0].id
+                    const [summaryData, txData] = await Promise.all([
+                        getDashboardSalesSummaryAction(storeId),
+                        getRecentTransactionsAction(storeId)
+                    ])
+                    setSalesSummary(summaryData)
+                    setRecentTx(txData)
+                }
+            } catch (error) {
+                console.error("Failed to fetch payments data", error)
+            } finally {
+                setFetching(false)
+            }
+        }
+
+        fetchData()
+    }, [organization])
+
+    if (orgLoading || (fetching && organization)) {
         return (
             <div className="flex justify-center items-center h-64">
                 <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
@@ -44,7 +73,7 @@ export default function PaymentsPage() {
                         <CardTitle className="text-sm font-medium">本日の売上</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">¥15,450</div>
+                        <div className="text-2xl font-bold">¥{salesSummary?.todaySales.toLocaleString() || 0}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -52,7 +81,7 @@ export default function PaymentsPage() {
                         <CardTitle className="text-sm font-medium">決済回数</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">12</div>
+                        <div className="text-2xl font-bold">{salesSummary?.transactionCount || 0}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -60,7 +89,7 @@ export default function PaymentsPage() {
                         <CardTitle className="text-sm font-medium">平均客単価</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">¥1,287</div>
+                        <div className="text-2xl font-bold">¥{salesSummary?.averageTicket.toLocaleString() || 0}</div>
                     </CardContent>
                 </Card>
             </div>
@@ -81,18 +110,26 @@ export default function PaymentsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {transactions.map((tx) => (
-                                <TableRow key={tx.id}>
-                                    <TableCell>{tx.date}</TableCell>
-                                    <TableCell>{tx.method}</TableCell>
-                                    <TableCell>¥{tx.amount}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={tx.status === 'Success' ? 'default' : 'destructive'}>
-                                            {tx.status === 'Success' ? '成功' : '失敗'}
-                                        </Badge>
+                            {recentTx.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="text-center text-gray-500 py-8">
+                                        決済履歴がありません
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            ) : (
+                                recentTx.map((tx) => (
+                                    <TableRow key={tx.id}>
+                                        <TableCell>{tx.date}</TableCell>
+                                        <TableCell>{tx.method}</TableCell>
+                                        <TableCell>¥{tx.amount.toLocaleString()}</TableCell>
+                                        <TableCell>
+                                            <Badge variant={tx.status === 'Success' ? 'default' : 'destructive'}>
+                                                {tx.status === 'Success' ? '成功' : '失敗'}
+                                            </Badge>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>
