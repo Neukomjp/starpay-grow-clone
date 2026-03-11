@@ -23,8 +23,6 @@ function formatBusinessHours(days: any[] | undefined) {
     let timeStr = `${firstOpen.start_time} - ${firstOpen.end_time}`;
     if (closedDaysStr) {
         timeStr += ` (${closedDaysStr}休)`;
-    } else {
-        timeStr += ' (年中無休)';
     }
     return timeStr;
 }
