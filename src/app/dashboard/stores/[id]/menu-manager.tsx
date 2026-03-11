@@ -138,7 +138,7 @@ export function MenuManager({ storeId }: MenuManagerProps) {
                                     {editingService ? '商品の詳細を編集してください。' : 'メニューに追加する商品・サービスの詳細を入力してください。'}
                                 </DialogDescription>
                             </DialogHeader>
-                            <div className="grid gap-4 py-4">
+                            <div className="grid gap-4 py-4 max-h-[65vh] overflow-y-auto px-2">
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="name" className="text-right">商品名</Label>
                                     <Input
