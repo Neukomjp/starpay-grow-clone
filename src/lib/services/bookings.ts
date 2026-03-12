@@ -205,12 +205,26 @@ export const bookingService = {
                 .from('staff_shifts')
                 .select('*')
                 .in('staff_id', staffIds)
+                .eq('store_id', storeId)
                 .eq('day_of_week', dayOfWeek)
                 .eq('is_holiday', false)
 
             if (shiftsError) throw shiftsError
-
-            if (!shifts || shifts.length === 0) return []
+            
+            // 2.5 Get exceptions for this day
+            const year = jstDate.getUTCFullYear()
+            const month = String(jstDate.getUTCMonth() + 1).padStart(2, '0')
+            const day = String(jstDate.getUTCDate()).padStart(2, '0')
+            const dateStr = `${year}-${month}-${day}`
+            
+            const { data: exceptions, error: exceptionsError } = await supabase
+                .from('staff_shift_exceptions')
+                .select('*')
+                .in('staff_id', staffIds)
+                .eq('store_id', storeId)
+                .eq('date', dateStr)
+                
+            if (exceptionsError) throw exceptionsError
 
             // 3. Get existing bookings for this date and these staff
             // Assuming `date` is a Date object representing the start of the day in JST (e.g. 15:00 UTC)
@@ -228,7 +242,7 @@ export const bookingService = {
 
             if (bookingsError) throw bookingsError
 
-            return this._calculateSlots(shifts, bookings, durationMinutes, staffIds, interval, bufferBefore, bufferAfter, businessDays, date)
+            return this._calculateSlots(shifts || [], exceptions || [], bookings || [], durationMinutes, staffIds, interval, bufferBefore, bufferAfter, businessDays, date)
 
         } catch (error: unknown) {
             throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
@@ -238,6 +252,8 @@ export const bookingService = {
     _calculateSlots(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         shifts: any[],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        exceptions: any[],
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         bookings: any[],
         durationMinutes: number,
@@ -316,30 +332,41 @@ export const bookingService = {
 
                 // Check if any staff is available for this slot
                 const isSlotAvailable = staffIds.some(sId => {
-                    // Check shift
-                    const shift = shifts.find(sh => sh.staff_id === sId)
-                    if (!shift) return false
-
-                    const shiftStartParts = shift.start_time.split(':')
-                    const shiftEndParts = shift.end_time.split(':')
-                    const shiftStartMin = parseInt(shiftStartParts[0]) * 60 + parseInt(shiftStartParts[1])
-                    const shiftEndMin = parseInt(shiftEndParts[0]) * 60 + parseInt(shiftEndParts[1])
-
-                    // Shift check: Service must happen within shift?
-                    // Typically buffers can be outside shift (polishing/prep), but usually staff must be there.
-                    // Let's assume strict shift adherence: effective range must be within shift.
-                    if (effectiveStartMin < shiftStartMin || effectiveEndMin > shiftEndMin) return false
-
-                    // Check break time
-                    if (shift.break_start_time && shift.break_end_time) {
-                        const breakStartParts = shift.break_start_time.split(':')
-                        const breakEndParts = shift.break_end_time.split(':')
-                        const breakStartMin = parseInt(breakStartParts[0]) * 60 + parseInt(breakStartParts[1])
-                        const breakEndMin = parseInt(breakEndParts[0]) * 60 + parseInt(breakEndParts[1])
-
-                        // If effective slot overlaps with break: (StartA < EndB) && (EndA > StartB)
-                        if (effectiveStartMin < breakEndMin && effectiveEndMin > breakStartMin) return false
+                    const staffExceptions = exceptions.filter(e => e.staff_id === sId)
+                    let activeShifts = shifts.filter(sh => sh.staff_id === sId)
+                    
+                    if (staffExceptions.length > 0) {
+                        if (staffExceptions.every(e => e.is_holiday)) return false
+                        activeShifts = staffExceptions.filter(e => !e.is_holiday)
+                    } else if (activeShifts.length === 0) {
+                        return false
                     }
+
+                    const isWithinShift = activeShifts.some(shift => {
+                        if (!shift.start_time || !shift.end_time) return false
+
+                        const shiftStartParts = shift.start_time.split(':')
+                        const shiftEndParts = shift.end_time.split(':')
+                        const shiftStartMin = parseInt(shiftStartParts[0]) * 60 + parseInt(shiftStartParts[1])
+                        const shiftEndMin = parseInt(shiftEndParts[0]) * 60 + parseInt(shiftEndParts[1])
+
+                        if (effectiveStartMin < shiftStartMin || effectiveEndMin > shiftEndMin) return false
+
+                        // Check break time
+                        if (shift.break_start_time && shift.break_end_time) {
+                            const breakStartParts = shift.break_start_time.split(':')
+                            const breakEndParts = shift.break_end_time.split(':')
+                            const breakStartMin = parseInt(breakStartParts[0]) * 60 + parseInt(breakStartParts[1])
+                            const breakEndMin = parseInt(breakEndParts[0]) * 60 + parseInt(breakEndParts[1])
+
+                            // If effective slot overlaps with break: (StartA < EndB) && (EndA > StartB)
+                            if (effectiveStartMin < breakEndMin && effectiveEndMin > breakStartMin) return false
+                        }
+                        
+                        return true
+                    })
+                    
+                    if (!isWithinShift) return false
 
                     // Check existing bookings overlap
                     const hasOverlap = bookings?.some(b => {

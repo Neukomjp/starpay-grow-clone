@@ -14,6 +14,19 @@ export const shiftService = {
         return data as Shift[]
     },
 
+    async getShiftsByStaffAndStore(staffId: string, storeId: string) {
+        const supabase = createClient()
+        const { data, error } = await supabase
+            .from('staff_shifts')
+            .select('*')
+            .eq('staff_id', staffId)
+            .eq('store_id', storeId)
+            .order('start_time', { ascending: true })
+
+        if (error) throw new Error(error.message)
+        return data as Shift[]
+    },
+
     async getShiftsByStoreId(storeId: string) {
         // Without staff-store mapping in staff_shifts table, we need to join with staff table
         const supabase = createClient()
@@ -37,16 +50,28 @@ export const shiftService = {
         return data as Shift[]
     },
 
-    async upsertShift(shiftConfig: Omit<Shift, 'id'>) {
+    async saveWeeklyShifts(staffId: string, storeId: string, shifts: Omit<Shift, 'id'>[]) {
         const supabase = createClient()
-        const { data, error } = await supabase
+        
+        // Delete all normal shifts for this staff at this store
+        const { error: deleteError } = await supabase
             .from('staff_shifts')
-            .upsert(shiftConfig, { onConflict: 'staff_id, day_of_week' })
-            .select()
-            .single()
+            .delete()
+            .eq('staff_id', staffId)
+            .eq('store_id', storeId)
+            
+        if (deleteError) throw new Error(deleteError.message)
+        
+        if (shifts.length > 0) {
+            const { data, error } = await supabase
+                .from('staff_shifts')
+                .insert(shifts)
+                .select()
 
-        if (error) throw new Error(error.message)
-        return data as Shift
+            if (error) throw new Error(error.message)
+            return data as Shift[]
+        }
+        return []
     },
 
     async getShiftForDate(staffId: string, date: Date) {

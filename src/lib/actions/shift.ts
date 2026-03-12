@@ -12,8 +12,12 @@ export async function getShiftsByStoreIdAction(storeId: string) {
     return await shiftService.getShiftsByStoreId(storeId)
 }
 
-export async function upsertShiftAction(shiftConfig: Omit<Shift, 'id'>) {
-    const result = await shiftService.upsertShift(shiftConfig)
+export async function getShiftsByStaffAndStoreAction(staffId: string, storeId: string) {
+    return await shiftService.getShiftsByStaffAndStore(staffId, storeId)
+}
+
+export async function saveWeeklyShiftsAction(staffId: string, storeId: string, shifts: Omit<Shift, 'id'>[]) {
+    const result = await shiftService.saveWeeklyShifts(staffId, storeId, shifts)
     revalidatePath('/dashboard/stores/[id]')
     return result
 }

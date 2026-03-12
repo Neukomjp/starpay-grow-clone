@@ -5,18 +5,32 @@ export const staffService = {
     async getStaffByStoreId(storeId: string) {
         try {
             const supabase = createClient()
-            // Note: Supabase returns snake_case. valid runtime props are store_id, avatar_url
-            // We need to map to Staff type (camelCase)
+            // Note: Use inner join with store_staff to get staff for this store
             const { data, error } = await supabase
                 .from('staff')
-                .select('*')
-                .eq('store_id', storeId)
+                .select(`
+                    *,
+                    store_staff!inner ( store_id )
+                `)
+                .eq('store_staff.store_id', storeId)
 
             if (error) throw new Error(error.message)
 
-            return (data || []).map((s) => ({
+            const staffIds = data ? data.map((s: any) => s.id) : []
+            let storeStaffMapping: any[] = []
+            
+            if (staffIds.length > 0) {
+               const { data: mapping } = await supabase
+                   .from('store_staff')
+                   .select('staff_id, store_id')
+                   .in('staff_id', staffIds)
+               storeStaffMapping = mapping || []
+            }
+
+            return (data || []).map((s: any) => ({
                 id: s.id,
                 storeId: s.store_id,
+                storeIds: storeStaffMapping.filter((m: any) => m.staff_id === s.id).map((m: any) => m.store_id),
                 name: s.name,
                 role: s.role,
                 bio: s.bio,
@@ -33,8 +47,10 @@ export const staffService = {
         try {
             const supabase = createClient()
 
+            const targetStoreIds = staff.storeIds && staff.storeIds.length > 0 ? staff.storeIds : (staff.storeId ? [staff.storeId] : [])
+
             const dbStaff = {
-                store_id: staff.storeId,
+                store_id: targetStoreIds[0] || null, // Keep for backward compatibility
                 name: staff.name,
                 role: staff.role,
                 bio: staff.bio,
@@ -51,9 +67,19 @@ export const staffService = {
 
             if (error) throw new Error(error.message)
 
+            // Insert into store_staff junction table
+            if (targetStoreIds.length > 0) {
+                const storeStaffEntries = targetStoreIds.map(sid => ({
+                    store_id: sid,
+                    staff_id: data.id
+                }))
+                await supabase.from('store_staff').insert(storeStaffEntries)
+            }
+
             return {
                 id: data.id,
                 storeId: data.store_id,
+                storeIds: targetStoreIds,
                 name: data.name,
                 role: data.role,
                 bio: data.bio,
@@ -77,6 +103,10 @@ export const staffService = {
             if (updates.avatarUrl !== undefined) dbUpdates.avatar_url = updates.avatarUrl
             if (updates.specialties) dbUpdates.specialties = updates.specialties
             if (updates.serviceIds) dbUpdates.service_ids = updates.serviceIds
+            
+            if (updates.storeIds && updates.storeIds.length > 0) {
+                dbUpdates.store_id = updates.storeIds[0]
+            }
 
             const { data, error } = await supabase
                 .from('staff')
@@ -87,9 +117,22 @@ export const staffService = {
 
             if (error) throw new Error(error.message)
 
+            // Update junction table if storeIds provided
+            if (updates.storeIds) {
+                await supabase.from('store_staff').delete().eq('staff_id', id)
+                if (updates.storeIds.length > 0) {
+                    const storeStaffEntries = updates.storeIds.map(sid => ({
+                        store_id: sid,
+                        staff_id: id
+                    }))
+                    await supabase.from('store_staff').insert(storeStaffEntries)
+                }
+            }
+
             return {
                 id: data.id,
                 storeId: data.store_id,
+                storeIds: updates.storeIds || [],
                 name: data.name,
                 role: data.role,
                 bio: data.bio,

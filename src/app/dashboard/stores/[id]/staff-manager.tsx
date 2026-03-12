@@ -11,8 +11,10 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge'
 import { Plus, Trash2 } from 'lucide-react'
 import { Staff, Service } from '@/types/staff'
+import { StoreData } from '@/lib/types/store'
 import { staffService } from '@/lib/services/staff'
 import { menuService } from '@/lib/services/menu'
+import { storeService } from '@/lib/services/stores'
 import { toast } from 'sonner'
 import { ShiftDialog } from './shift-dialog'
 
@@ -23,6 +25,7 @@ interface StaffManagerProps {
 export function StaffManager({ storeId }: StaffManagerProps) {
     const [staffList, setStaffList] = useState<Staff[]>([])
     const [availableServices, setAvailableServices] = useState<Service[]>([])
+    const [availableStores, setAvailableStores] = useState<StoreData[]>([])
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [editingStaff, setEditingStaff] = useState<Staff | null>(null)
     const [staffToDelete, setStaffToDelete] = useState<Staff | null>(null)
@@ -31,7 +34,8 @@ export function StaffManager({ storeId }: StaffManagerProps) {
         role: '',
         bio: '',
         specialties: '', // Comma separated for input
-        serviceIds: [] as string[]
+        serviceIds: [] as string[],
+        storeIds: [storeId] as string[]
     })
     const [isLoading, setIsLoading] = useState(false)
 
@@ -44,9 +48,9 @@ export function StaffManager({ storeId }: StaffManagerProps) {
     useEffect(() => {
         if (!isDialogOpen) {
             setEditingStaff(null)
-            setFormData({ name: '', role: '', bio: '', specialties: '', serviceIds: [] })
+            setFormData({ name: '', role: '', bio: '', specialties: '', serviceIds: [], storeIds: [storeId] })
         }
-    }, [isDialogOpen])
+    }, [isDialogOpen, storeId])
 
     async function loadStaff() {
         try {
@@ -67,6 +71,20 @@ export function StaffManager({ storeId }: StaffManagerProps) {
         }
     }
 
+    async function loadStores() {
+        try {
+            // No args will use demo org ID if no auth context, which is fine for now
+            const data = await storeService.getStores()
+            setAvailableStores(data)
+        } catch (error) {
+            console.error('Error loading stores:', error)
+        }
+    }
+
+    useEffect(() => {
+        loadStores()
+    }, [])
+
     const handleEditClick = (staff: Staff) => {
         setEditingStaff(staff)
         setFormData({
@@ -74,7 +92,8 @@ export function StaffManager({ storeId }: StaffManagerProps) {
             role: staff.role,
             bio: staff.bio || '',
             specialties: staff.specialties?.join(', ') || '',
-            serviceIds: staff.serviceIds || []
+            serviceIds: staff.serviceIds || [],
+            storeIds: staff.storeIds || [storeId]
         })
         setIsDialogOpen(true)
     }
@@ -93,14 +112,16 @@ export function StaffManager({ storeId }: StaffManagerProps) {
                     role: formData.role,
                     bio: formData.bio,
                     specialties: specialtiesArray,
-                    serviceIds: formData.serviceIds
+                    serviceIds: formData.serviceIds,
+                    storeIds: formData.storeIds
                 })
                 setStaffList(staffList.map(s => s.id === updated.id ? updated : s))
                 toast.success('スタッフ情報を更新しました')
             } else {
                 // Add
                 const added = await staffService.addStaff({
-                    storeId: storeId,
+                    storeId: formData.storeIds[0] || storeId,
+                    storeIds: formData.storeIds.length > 0 ? formData.storeIds : [storeId],
                     name: formData.name,
                     role: formData.role,
                     bio: formData.bio,
@@ -142,14 +163,14 @@ export function StaffManager({ storeId }: StaffManagerProps) {
                     <DialogTrigger asChild>
                         <Button size="sm"><Plus className="mr-2 h-4 w-4" /> スタッフを追加</Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px]">
+                    <DialogContent className="sm:max-w-[500px] max-h-[90vh] flex flex-col">
                         <DialogHeader>
                             <DialogTitle>{editingStaff ? 'スタッフ情報の編集' : '新しいスタッフを追加'}</DialogTitle>
                             <DialogDescription>
                                 スタッフの基本情報を入力してください。
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="grid gap-4 py-4">
+                        <div className="grid gap-4 py-4 px-1 max-h-[60vh] overflow-y-auto">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="name" className="text-right">名前 <span className="text-red-500">*</span></Label>
                                 <Input
@@ -225,6 +246,48 @@ export function StaffManager({ storeId }: StaffManagerProps) {
                                     )}
                                 </div>
                             </div>
+
+                            <div className="grid grid-cols-4 items-start gap-4">
+                                <Label className="text-right mt-2">所属店舗 <span className="text-red-500">*</span></Label>
+                                <div className="col-span-3 space-y-2 border rounded-md p-3 max-h-[150px] overflow-y-auto bg-stone-50">
+                                    {availableStores.length === 0 ? (
+                                        <p className="text-sm text-muted-foreground">店舗情報が見つかりません</p>
+                                    ) : (
+                                        availableStores.map((store) => (
+                                            <div key={store.id} className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    id={`store-${store.id}`}
+                                                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                                    checked={formData.storeIds.includes(store.id)}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setFormData({
+                                                                ...formData,
+                                                                storeIds: [...formData.storeIds, store.id]
+                                                            })
+                                                        } else {
+                                                            // Prevent unchecking the last element
+                                                            if (formData.storeIds.length <= 1) {
+                                                                toast.error('少なくとも1つの店舗に所属する必要があります')
+                                                                return
+                                                            }
+                                                            setFormData({
+                                                                ...formData,
+                                                                storeIds: formData.storeIds.filter(id => id !== store.id)
+                                                            })
+                                                        }
+                                                    }}
+                                                />
+                                                <label htmlFor={`store-${store.id}`} className="text-sm cursor-pointer select-none font-medium">
+                                                    {store.name}
+                                                    {store.id === storeId && <span className="text-xs ml-2 text-gray-500 font-normal">(現在の店舗)</span>}
+                                                </label>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
                         </div>
                         <DialogFooter>
                             <Button onClick={handleSaveStaff} disabled={isLoading}>
@@ -258,7 +321,7 @@ export function StaffManager({ storeId }: StaffManagerProps) {
                                 <Button variant="outline" size="sm" className="w-full" onClick={() => handleEditClick(staff)}>
                                     情報の編集
                                 </Button>
-                                <ShiftDialog staffId={staff.id} staffName={staff.name} />
+                                <ShiftDialog staffId={staff.id} staffName={staff.name} storeId={storeId} />
                                 <Button variant="ghost" size="sm" className="w-full text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => setStaffToDelete(staff)}>
                                     <Trash2 className="mr-2 h-4 w-4" /> 削除
                                 </Button>

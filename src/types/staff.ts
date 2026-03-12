@@ -1,6 +1,7 @@
 export type Staff = {
     id: string
-    storeId: string
+    storeId?: string // Deprecated
+    storeIds?: string[] // Replaces storeId for multi-store support
     name: string
     role: string
     bio: string

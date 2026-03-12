@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { Loader2, Trash2 } from 'lucide-react'
 
 interface ShiftExceptionDialogProps {
+    storeId: string
     staffId: string
     staffName: string
     date: Date
@@ -23,6 +24,7 @@ interface ShiftExceptionDialogProps {
 }
 
 export function ShiftExceptionDialog({
+    storeId,
     staffId,
     staffName,
     date,
@@ -78,6 +80,7 @@ export function ShiftExceptionDialog({
 
             await upsertShiftExceptionAction({
                 staff_id: staffId,
+                store_id: storeId,
                 date: dateStr,
                 is_holiday: isHoliday,
                 start_time: isHoliday ? null : `${startTime}:00`,

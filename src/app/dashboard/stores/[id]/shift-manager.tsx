@@ -76,8 +76,10 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
         }
     }
 
-    const getShiftForStaffDay = (staffId: string, dayIndex: number) => {
-        return allShifts.find(s => s.staff_id === staffId && s.day_of_week === dayIndex)
+    const getShiftsForStaffDay = (staffId: string, dayIndex: number) => {
+        return allShifts
+            .filter(s => s.staff_id === staffId && s.day_of_week === dayIndex)
+            .sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''))
     }
 
     const handleEditClick = (staff: Staff) => {
@@ -203,22 +205,26 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                                                     </div>
                                                 </TableCell>
                                                 {DAYS_OF_WEEK.map((_, dayIndex) => {
-                                                    const shift = getShiftForStaffDay(staff.id, dayIndex)
+                                                    const shifts = getShiftsForStaffDay(staff.id, dayIndex)
                                                     return (
                                                         <TableCell key={dayIndex} className="text-center text-xs p-2">
-                                                            {shift ? (
-                                                                shift.is_holiday ? (
-                                                                    <span className="text-gray-300">-</span>
-                                                                ) : (
-                                                                    <div className="bg-green-50 text-green-700 py-1 px-2 rounded text-xs">
-                                                                        <div>{shift.start_time.slice(0, 5)}-{shift.end_time.slice(0, 5)}</div>
-                                                                        {shift.break_start_time && shift.break_end_time && (
-                                                                            <div className="text-gray-500 text-[10px] mt-0.5">
-                                                                                (休 {shift.break_start_time.slice(0, 5)}-{shift.break_end_time.slice(0, 5)})
+                                                            {shifts.length > 0 ? (
+                                                                <div className="flex flex-col gap-1 items-center">
+                                                                    {shifts.map((shift, idx) => (
+                                                                        shift.is_holiday ? (
+                                                                            <span key={idx} className="text-gray-300">-</span>
+                                                                        ) : (
+                                                                            <div key={idx} className="bg-green-50 text-green-700 py-1 px-2 rounded text-xs w-full max-w-[100px]">
+                                                                                <div>{shift.start_time.slice(0, 5)}-{shift.end_time.slice(0, 5)}</div>
+                                                                                {shift.break_start_time && shift.break_end_time && (
+                                                                                    <div className="text-gray-500 text-[10px] mt-0.5">
+                                                                                        (休 {shift.break_start_time.slice(0, 5)}-{shift.break_end_time.slice(0, 5)})
+                                                                                    </div>
+                                                                                )}
                                                                             </div>
-                                                                        )}
-                                                                    </div>
-                                                                )
+                                                                        )
+                                                                    ))}
+                                                                </div>
                                                             ) : (
                                                                 <span className="text-gray-300">-</span>
                                                             )}
@@ -277,10 +283,11 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                                             let singleIsHoliday = true
 
                                             if (!isAllStaff) {
-                                                singleStaffShift = getShiftForStaffDay(selectedMonthStaffId, dayOfWeek)
+                                                const shifts = getShiftsForStaffDay(selectedMonthStaffId, dayOfWeek)
                                                 singleStaffException = getExceptionForStaffDay(selectedMonthStaffId, day)
-                                                const effectiveShift = singleStaffException || singleStaffShift
-                                                singleIsHoliday = effectiveShift?.is_holiday ?? true
+                                                singleIsHoliday = singleStaffException 
+                                                    ? singleStaffException.is_holiday 
+                                                    : (shifts.length === 0 || shifts.every(s => s.is_holiday))
                                             }
 
                                             return (
@@ -307,22 +314,33 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                                                                 // --- ALL STAFF VIEW ---
                                                                 <div className="flex flex-col gap-1">
                                                                     {staffList.map(staff => {
-                                                                        const shift = getShiftForStaffDay(staff.id, dayOfWeek)
+                                                                        const shifts = getShiftsForStaffDay(staff.id, dayOfWeek)
                                                                         const exception = getExceptionForStaffDay(staff.id, day)
-                                                                        const effectiveShift = exception || shift
-                                                                        const isHoliday = effectiveShift?.is_holiday ?? true
+                                                                        
+                                                                        // Active non-holiday instances to show
+                                                                        const activeEntries = exception 
+                                                                            ? [exception]
+                                                                            : shifts.filter(s => !s.is_holiday)
+                                                                            
+                                                                        const isHoliday = exception ? exception.is_holiday : (activeEntries.length === 0)
 
                                                                         return (
-                                                                            <div key={staff.id} className="text-xs flex items-center gap-1">
-                                                                                <div className={`w - 1.5 h - 1.5 rounded - full shrink - 0 ${isHoliday ? 'bg-gray-300' : exception ? 'bg-amber-500' : 'bg-green-500'} `} />
-                                                                                <span className="truncate w-10 shrink-0 font-medium" title={staff.name}>{staff.name.slice(0, 3)}</span>
-                                                                                {isHoliday ? (
-                                                                                    <span className="text-gray-400 text-[10px]">休</span>
-                                                                                ) : (
-                                                                                    <span className={`${exception ? 'text-amber-700' : 'text-green-700'} text - [10px]`}>
-                                                                                        {effectiveShift?.start_time?.slice(0, 5)}-{effectiveShift?.end_time?.slice(0, 5)}
-                                                                                    </span>
-                                                                                )}
+                                                                            <div key={staff.id} className="text-xs flex flex-col gap-0.5 border-b border-gray-50 pb-1 mb-1 last:border-0 last:pb-0 last:mb-0">
+                                                                                <div className="flex items-center gap-1">
+                                                                                    <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${isHoliday ? 'bg-gray-300' : exception ? 'bg-amber-500' : 'bg-green-500'}`} />
+                                                                                    <span className="truncate w-10 shrink-0 font-medium" title={staff.name}>{staff.name.slice(0, 3)}</span>
+                                                                                    {isHoliday ? (
+                                                                                        <span className="text-gray-400 text-[10px]">休</span>
+                                                                                    ) : (
+                                                                                        <div className="flex flex-col">
+                                                                                            {activeEntries.map((shift, idx) => (
+                                                                                                <span key={idx} className={`${exception ? 'text-amber-700' : 'text-green-700'} text-[10px]`}>
+                                                                                                    {shift.start_time?.slice(0, 5)}-{shift.end_time?.slice(0, 5)}
+                                                                                                </span>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    )}
+                                                                                </div>
                                                                             </div>
                                                                         )
                                                                     })}
@@ -330,19 +348,23 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                                                             ) : (
                                                                 // --- SINGLE STAFF VIEW ---
                                                                 singleIsHoliday ? (
-                                                                    <div className={`text - xs py - 1 px - 1.5 rounded text - center ${singleStaffException ? 'bg-rose-100 text-rose-700 font-medium' : 'text-gray-400'} `}>
+                                                                    <div className={`text-xs py-1 px-1.5 rounded text-center ${singleStaffException ? 'bg-rose-100 text-rose-700 font-medium' : 'text-gray-400'}`}>
                                                                         休
                                                                     </div>
                                                                 ) : (
-                                                                    <div className={`text - xs py - 1 px - 1.5 rounded flex flex - col ${singleStaffException ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-green-50 text-green-700'} `}>
-                                                                        <div className="font-medium">
-                                                                            {(singleStaffException || singleStaffShift)?.start_time?.slice(0, 5)}-{(singleStaffException || singleStaffShift)?.end_time?.slice(0, 5)}
-                                                                        </div>
-                                                                        {(singleStaffException || singleStaffShift)?.break_start_time && (
-                                                                            <div className="opacity-70 text-[10px] mt-0.5 scale-90 origin-left">
-                                                                                休: {(singleStaffException || singleStaffShift)?.break_start_time?.slice(0, 5)}-{(singleStaffException || singleStaffShift)?.break_end_time?.slice(0, 5)}
+                                                                    <div className="flex flex-col gap-1">
+                                                                        {(singleStaffException ? [singleStaffException] : getShiftsForStaffDay(selectedMonthStaffId, dayOfWeek).filter(s => !s.is_holiday)).map((shift, idx) => (
+                                                                            <div key={idx} className={`text-xs py-1 px-1.5 rounded flex flex-col ${singleStaffException ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-green-50 text-green-700'}`}>
+                                                                                <div className="font-medium text-center">
+                                                                                    {shift.start_time?.slice(0, 5)}-{shift.end_time?.slice(0, 5)}
+                                                                                </div>
+                                                                                {shift.break_start_time && (
+                                                                                    <div className="opacity-70 text-[10px] mt-0.5 text-center">
+                                                                                        (休{shift.break_start_time?.slice(0, 5)}-{shift.break_end_time?.slice(0, 5)})
+                                                                                    </div>
+                                                                                )}
                                                                             </div>
-                                                                        )}
+                                                                        ))}
                                                                     </div>
                                                                 )
                                                             )}
@@ -362,6 +384,7 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
             {selectedStaff && (
                 <>
                     <ShiftDialog
+                        storeId={storeId}
                         staffId={selectedStaff.id}
                         staffName={selectedStaff.name}
                         open={isWeeklyDialogOpen}
@@ -370,10 +393,11 @@ export function ShiftManager({ storeId }: ShiftManagerProps) {
                     />
 
                     <ShiftExceptionDialog
+                        storeId={storeId}
                         staffId={selectedStaff.id}
                         staffName={selectedStaff.name}
                         date={exceptionDialogDate}
-                        defaultShift={getShiftForStaffDay(selectedStaff.id, exceptionDialogDate.getDay()) || null}
+                        defaultShift={getShiftsForStaffDay(selectedStaff.id, exceptionDialogDate.getDay())[0] || null}
                         existingException={getExceptionForStaffDay(selectedStaff.id, exceptionDialogDate)}
                         open={isExceptionDialogOpen}
                         onOpenChange={setIsExceptionDialogOpen}
