@@ -15,6 +15,7 @@ import { StoreData } from '@/lib/types/store'
 import { staffService } from '@/lib/services/staff'
 import { menuService } from '@/lib/services/menu'
 import { storeService } from '@/lib/services/stores'
+import { getStoresAction } from '@/lib/actions/store'
 import { toast } from 'sonner'
 import { ShiftDialog } from './shift-dialog'
 
@@ -73,9 +74,8 @@ export function StaffManager({ storeId }: StaffManagerProps) {
 
     async function loadStores() {
         try {
-            // No args will use demo org ID if no auth context, which is fine for now
-            const data = await storeService.getStores()
-            setAvailableStores(data)
+            const data = await getStoresAction()
+            setAvailableStores(data || [])
         } catch (error) {
             console.error('Error loading stores:', error)
         }
