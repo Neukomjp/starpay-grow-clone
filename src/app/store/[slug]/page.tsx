@@ -11,6 +11,7 @@ import { ticketService } from '@/lib/services/tickets'
 import { Service } from '@/types/staff'
 import { BookingSection } from './booking-section'
 import { TicketSection } from './ticket-section'
+import { MenuList } from './menu-list'
 
 function formatBusinessHours(days: any[] | undefined) {
     if (!days || days.length === 0) return '営業時間未設定';
@@ -209,30 +210,7 @@ export default async function StorePublicPage(props: { params: Promise<{ slug: s
             {/* Menu Preview Section */}
             <div id="menu" className="max-w-4xl mx-auto py-8 px-4">
                 <h2 className={`text-3xl font-bold text-center mb-8 ${theme.textColor || 'text-stone-900'}`}>メニュー & サービス</h2>
-                <div className="grid md:grid-cols-2 gap-6">
-                    {menuItems.length > 0 ? (
-                        menuItems.map((item) => (
-                            <div key={item.id} className="flex gap-4 items-center p-4 bg-white rounded-lg shadow-sm border border-stone-100">
-                                {item.image_url && (
-                                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md">
-                                        <img src={item.image_url} alt={item.name} className="h-full w-full object-cover" />
-                                    </div>
-                                )}
-                                <div className="flex-1 min-w-0 mr-4">
-                                    <div className="font-medium text-lg truncate">{item.name}</div>
-                                    <div className="text-sm text-gray-500 truncate">{item.category}</div>
-                                    {item.description && (
-                                        <div className="text-sm text-gray-600 mt-1 whitespace-pre-wrap break-words">{item.description}</div>
-                                    )}
-                                    <div className="text-sm text-gray-400 mt-1">{item.duration_minutes}分</div>
-                                </div>
-                                <span className="font-bold text-lg shrink-0">¥{item.price}</span>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-center col-span-2 text-gray-500">表示できるメニューがありません。</p>
-                    )}
-                </div>
+                <MenuList menuItems={menuItems} />
             </div>
 
             {/* Footer */}
