@@ -154,6 +154,11 @@ export function WeeklyCalendar({ storeId, onSelect, className, durationMinutes, 
                                         </div>
                                         {days.map((day) => {
                                             const available = isAvailable(day, time)
+                                            const dayOfWeek = day.getDay()
+                                            const isSunday = dayOfWeek === 0
+                                            const isSaturday = dayOfWeek === 6
+                                            
+                                            const bgClass = isSunday ? "bg-red-50/50" : isSaturday ? "bg-blue-50/50" : ""
 
                                             // Better past check:
                                             const slotDate = new Date(day)
@@ -165,26 +170,27 @@ export function WeeklyCalendar({ storeId, onSelect, className, durationMinutes, 
 
                                             if (isStrictPast) {
                                                 return (
-                                                    <div key={day.toISOString() + time} className="flex justify-center items-center h-10">
+                                                    <div key={day.toISOString() + time} className={cn("flex justify-center items-center h-10", bgClass)}>
                                                         <span className="text-stone-200">-</span>
                                                     </div>
                                                 )
                                             }
 
                                             return (
-                                                <button
-                                                    key={day.toISOString() + time}
-                                                    onClick={() => available && onSelect?.(day, time)}
-                                                    disabled={!available}
-                                                    className={cn(
-                                                        "h-10 w-full flex items-center justify-center rounded-sm transition-all",
-                                                        available
-                                                            ? "text-blue-600 font-bold hover:bg-blue-50 cursor-pointer text-lg"
-                                                            : "text-stone-300 text-sm cursor-not-allowed"
-                                                    )}
-                                                >
-                                                    {available ? '◎' : '×'}
-                                                </button>
+                                                <div key={day.toISOString() + time} className={cn("px-1 py-0.5", bgClass)}>
+                                                    <button
+                                                        onClick={() => available && onSelect?.(day, time)}
+                                                        disabled={!available}
+                                                        className={cn(
+                                                            "h-full min-h-[36px] w-full flex items-center justify-center rounded-sm transition-all",
+                                                            available
+                                                                ? "text-blue-600 font-bold hover:bg-blue-100 cursor-pointer text-lg"
+                                                                : "text-stone-300 text-sm cursor-not-allowed"
+                                                        )}
+                                                    >
+                                                        {available ? '◎' : '×'}
+                                                    </button>
+                                                </div>
                                             )
                                         })}
                                     </div>
