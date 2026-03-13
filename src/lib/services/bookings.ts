@@ -51,7 +51,17 @@ export const bookingService = {
             
             // 1. Check for double booking
             if (booking.staff_id) {
-                // Fetch bookings for this staff on this day
+                // Fetch current store to get buffer settings
+                const { data: storeData, error: storeError } = await supabase
+                    .from('stores')
+                    .select('cross_store_buffers')
+                    .eq('id', booking.store_id)
+                    .single()
+                    
+                if (storeError) throw new Error(storeError.message)
+                const crossStoreBuffers = storeData.cross_store_buffers || {}
+
+                // Fetch bookings for this staff on this day across ALL stores
                 const checkDateStart = new Date(booking.start_time)
                 checkDateStart.setHours(0, 0, 0, 0)
                 const checkDateEnd = new Date(booking.start_time)
@@ -59,8 +69,7 @@ export const bookingService = {
 
                 const { data: existingBookings, error: fetchError } = await supabase
                     .from('bookings')
-                    .select('start_time, end_time, buffer_minutes_before, buffer_minutes_after')
-                    .eq('store_id', booking.store_id)
+                    .select('start_time, end_time, buffer_minutes_before, buffer_minutes_after, store_id')
                     .eq('staff_id', booking.staff_id)
                     .neq('status', 'cancelled')
                     .gte('start_time', checkDateStart.toISOString())
@@ -79,8 +88,14 @@ export const bookingService = {
                         const bStart = new Date(b.start_time)
                         const bEnd = new Date(b.end_time || b.start_time) // fallback
                         
-                        const bEffectiveStartMin = bStart.getHours() * 60 + bStart.getMinutes() - (b.buffer_minutes_before || 0)
-                        const bEffectiveEndMin = bEnd.getHours() * 60 + bEnd.getMinutes() + (b.buffer_minutes_after || 0)
+                        let extraBuffer = 0
+                        if (b.store_id !== booking.store_id) {
+                            // Apply travel buffer for different store
+                            extraBuffer = crossStoreBuffers[b.store_id] !== undefined ? crossStoreBuffers[b.store_id] : 60
+                        }
+                        
+                        const bEffectiveStartMin = bStart.getHours() * 60 + bStart.getMinutes() - (b.buffer_minutes_before || 0) - extraBuffer
+                        const bEffectiveEndMin = bEnd.getHours() * 60 + bEnd.getMinutes() + (b.buffer_minutes_after || 0) + extraBuffer
 
                         // Overlap condition: (StartA < EndB) && (EndA > StartB)
                         return (newEffectiveStartMin < bEffectiveEndMin) && (newEffectiveEndMin > bEffectiveStartMin)
@@ -234,7 +249,7 @@ export const bookingService = {
 
             const { data: bookings, error: bookingsError } = await supabase
                 .from('bookings')
-                .select('start_time, end_time, staff_id, status, buffer_minutes_before, buffer_minutes_after')
+                .select('start_time, end_time, staff_id, status, buffer_minutes_before, buffer_minutes_after, store_id')
                 .in('staff_id', staffIds)
                 .gte('start_time', startOfDayStr)
                 .lte('start_time', endOfDayStr)
@@ -242,7 +257,9 @@ export const bookingService = {
 
             if (bookingsError) throw bookingsError
 
-            return this._calculateSlots(shifts || [], exceptions || [], bookings || [], durationMinutes, staffIds, interval, bufferBefore, bufferAfter, businessDays, date)
+            const crossStoreBuffers = store.cross_store_buffers || {}
+
+            return this._calculateSlots(shifts || [], exceptions || [], bookings || [], durationMinutes, staffIds, interval, bufferBefore, bufferAfter, businessDays, date, storeId, crossStoreBuffers)
 
         } catch (error: unknown) {
             throw new Error(error instanceof Error ? error.message : JSON.stringify(error))
@@ -263,10 +280,9 @@ export const bookingService = {
         bufferAfter: number = 0,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         businessDays?: any[],
-        // We need the date to know which day of week applies, but date is not passed to _calculateSlots currently?
-        // Ah, loops 0-24h, so it's day-agnostic unless we know the day config.
-        // We'll pass the target date.
-        targetDate?: Date
+        targetDate?: Date,
+        currentStoreId?: string,
+        crossStoreBuffers?: Record<string, number>
     ) {
         const slots: string[] = []
 
@@ -383,8 +399,13 @@ export const bookingService = {
                         }
 
                         // Apply buffer of EXISTING booking if present
-                        const bBufferBefore = b.buffer_minutes_before || 0
-                        const bBufferAfter = b.buffer_minutes_after || 0
+                        let extraBuffer = 0
+                        if (currentStoreId && b.store_id !== currentStoreId) {
+                            extraBuffer = (crossStoreBuffers && crossStoreBuffers[b.store_id] !== undefined) ? crossStoreBuffers[b.store_id] : 60
+                        }
+
+                        const bBufferBefore = (b.buffer_minutes_before || 0) + extraBuffer
+                        const bBufferAfter = (b.buffer_minutes_after || 0) + extraBuffer
 
                         const bEffectiveStartTime = bStart.getTime() - (bBufferBefore * 60 * 1000)
                         const bEffectiveEndTime = bEnd.getTime() + (bBufferAfter * 60 * 1000)

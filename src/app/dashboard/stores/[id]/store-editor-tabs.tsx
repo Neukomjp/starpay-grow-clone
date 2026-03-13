@@ -16,10 +16,11 @@ import { ExternalLink } from 'lucide-react'
 
 interface StoreEditorTabsProps {
     store: StoreData
+    allStores?: any[]
     initialTab?: string
 }
 
-export function StoreEditorTabs({ store, initialTab = 'basic' }: StoreEditorTabsProps) {
+export function StoreEditorTabs({ store, allStores = [], initialTab = 'basic' }: StoreEditorTabsProps) {
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -53,7 +54,7 @@ export function StoreEditorTabs({ store, initialTab = 'basic' }: StoreEditorTabs
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <BasicInfoEditor store={store} />
+                            <BasicInfoEditor store={store} allStores={allStores} />
                         </CardContent>
                     </Card>
                 </TabsContent>

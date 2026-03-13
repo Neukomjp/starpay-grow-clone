@@ -17,9 +17,11 @@ export default async function StoreEditorPage({ params, searchParams }: StoreEdi
     const cookieStore = await cookies()
     const organizationId = cookieStore.get('organization-id')?.value
     let store
+    let allStores: any[] = []
 
     try {
         store = await storeService.getStoreById(id, organizationId)
+        allStores = await storeService.getStores(organizationId)
     } catch (error) {
         console.error('Error fetching store:', error)
         notFound()
@@ -29,5 +31,5 @@ export default async function StoreEditorPage({ params, searchParams }: StoreEdi
         notFound()
     }
 
-    return <StoreEditorTabs store={store} initialTab={typeof tab === 'string' ? tab : undefined} />
+    return <StoreEditorTabs store={store} allStores={allStores} initialTab={typeof tab === 'string' ? tab : undefined} />
 }

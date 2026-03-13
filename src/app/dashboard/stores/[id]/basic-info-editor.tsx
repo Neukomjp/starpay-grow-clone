@@ -14,9 +14,10 @@ import { Loader2 } from 'lucide-react'
 
 interface BasicInfoEditorProps {
     store: StoreData
+    allStores?: any[]
 }
 
-export function BasicInfoEditor({ store }: BasicInfoEditorProps) {
+export function BasicInfoEditor({ store, allStores = [] }: BasicInfoEditorProps) {
     const [loading, setLoading] = useState(false)
     const [name, setName] = useState(store.name)
     const [slug, setSlug] = useState(store.slug)
@@ -24,6 +25,7 @@ export function BasicInfoEditor({ store }: BasicInfoEditorProps) {
     const [address, setAddress] = useState(store.address || '')
     const [phone, setPhone] = useState(store.phone || '')
     const [bookingInterval, setBookingInterval] = useState(store.booking_interval_minutes?.toString() || '30')
+    const [crossStoreBuffers, setCrossStoreBuffers] = useState<Record<string, number>>(store.cross_store_buffers || {})
 
     // Initialize business days (default 10:00-19:00 if not set)
     const [businessDays, setBusinessDays] = useState(() => {
@@ -48,6 +50,13 @@ export function BasicInfoEditor({ store }: BasicInfoEditorProps) {
         setBusinessDays(newDays)
     }
 
+    const handleBufferChange = (otherStoreId: string, minutes: number) => {
+        setCrossStoreBuffers(prev => ({
+            ...prev,
+            [otherStoreId]: minutes
+        }))
+    }
+
     const handleSave = async () => {
         setLoading(true)
         try {
@@ -58,7 +67,8 @@ export function BasicInfoEditor({ store }: BasicInfoEditorProps) {
                 address,
                 phone,
                 booking_interval_minutes: parseInt(bookingInterval),
-                business_days: businessDays
+                business_days: businessDays,
+                cross_store_buffers: crossStoreBuffers
             })
             toast.success('店舗情報を更新しました')
         } catch (error) {
@@ -161,6 +171,46 @@ export function BasicInfoEditor({ store }: BasicInfoEditorProps) {
                         ))}
                     </div>
                 </div>
+
+                {allStores.length > 1 && (
+                    <div className="grid gap-4 border-t pt-4">
+                        <h3 className="font-semibold text-lg">他店舗からの移動時間設定</h3>
+                        <p className="text-sm text-muted-foreground">
+                            スタッフが同日に別店舗でシフトや予約を持っている場合、その店舗との間に自動で確保する予約不可時間（移動バッファ）を分単位で設定します。未設定の場合はデフォルトで60分が適用されます。
+                        </p>
+                        <div className="space-y-3">
+                            {allStores.filter(s => s.id !== store.id).map(otherStore => (
+                                <div key={otherStore.id} className="flex items-center justify-between p-3 bg-stone-50 rounded-md">
+                                    <div className="font-medium text-sm">
+                                        {otherStore.name} <span className="text-muted-foreground text-xs font-normal">との移動バッファ</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="number"
+                                            min="0"
+                                            step="10"
+                                            className="w-24 text-right"
+                                            placeholder="60"
+                                            value={crossStoreBuffers[otherStore.id] !== undefined ? crossStoreBuffers[otherStore.id] : ''}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                if (val === '') {
+                                                    // Remove the key if empty
+                                                    const newBuffers = { ...crossStoreBuffers }
+                                                    delete newBuffers[otherStore.id]
+                                                    setCrossStoreBuffers(newBuffers)
+                                                } else {
+                                                    handleBufferChange(otherStore.id, parseInt(val) || 0)
+                                                }
+                                            }}
+                                        />
+                                        <span className="text-sm">分</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="flex justify-end">

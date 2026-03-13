@@ -30,6 +30,7 @@ export type StoreData = {
     created_at?: string
     organization_id?: string // New field for SaaS multi-tenancy
     business_days?: BusinessDayConfig[]
+    cross_store_buffers?: Record<string, number>
 }
 
 export type BusinessDayConfig = {
