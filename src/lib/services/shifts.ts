@@ -1,9 +1,9 @@
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/server'
 import { Shift, ShiftException } from '@/lib/types/shift'
 
 export const shiftService = {
     async getShiftsByStaffId(staffId: string) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data, error } = await supabase
             .from('staff_shifts')
             .select('*')
@@ -15,7 +15,7 @@ export const shiftService = {
     },
 
     async getShiftsByStaffAndStore(staffId: string, storeId: string) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data, error } = await supabase
             .from('staff_shifts')
             .select('*')
@@ -29,7 +29,7 @@ export const shiftService = {
 
     async getShiftsByStoreId(storeId: string) {
         // Without staff-store mapping in staff_shifts table, we need to join with staff table
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: staff, error: staffError } = await supabase
             .from('staff')
             .select('id')
@@ -51,7 +51,7 @@ export const shiftService = {
     },
 
     async saveWeeklyShifts(staffId: string, storeId: string, shifts: Omit<Shift, 'id'>[]) {
-        const supabase = createClient()
+        const supabase = await createClient()
         
         // Delete all normal shifts for this staff at this store
         const { error: deleteError } = await supabase
@@ -76,7 +76,7 @@ export const shiftService = {
 
     async getShiftForDate(staffId: string, date: Date) {
         const dayOfWeek = date.getDay()
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data, error } = await supabase
             .from('staff_shifts')
             .select('*')
@@ -91,7 +91,7 @@ export const shiftService = {
     // --- Shift Exceptions ---
 
     async getShiftExceptionsByStoreId(storeId: string, startDate?: string, endDate?: string) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: staff, error: staffError } = await supabase
             .from('staff')
             .select('id')
@@ -122,7 +122,7 @@ export const shiftService = {
     },
 
     async upsertShiftException(exceptionConfig: Omit<ShiftException, 'id'>) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data, error } = await supabase
             .from('staff_shift_exceptions')
             .upsert(exceptionConfig, { onConflict: 'staff_id, date' })
@@ -134,7 +134,7 @@ export const shiftService = {
     },
 
     async deleteShiftException(staffId: string, date: string) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { error } = await supabase
             .from('staff_shift_exceptions')
             .delete()
