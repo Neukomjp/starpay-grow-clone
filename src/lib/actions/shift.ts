@@ -17,9 +17,14 @@ export async function getShiftsByStaffAndStoreAction(staffId: string, storeId: s
 }
 
 export async function saveWeeklyShiftsAction(staffId: string, storeId: string, shifts: Omit<Shift, 'id'>[]) {
-    const result = await shiftService.saveWeeklyShifts(staffId, storeId, shifts)
-    revalidatePath('/dashboard/stores/[id]')
-    return result
+    try {
+        const result = await shiftService.saveWeeklyShifts(staffId, storeId, shifts)
+        revalidatePath('/dashboard/stores/[id]')
+        return { success: true as const, data: result }
+    } catch (e: any) {
+        console.error("FATAL ERROR IN SHIFT SAVE:", e)
+        return { success: false as const, error: e.message || JSON.stringify(e) }
+    }
 }
 
 // --- Shift Exceptions ---

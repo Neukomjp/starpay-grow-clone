@@ -154,14 +154,20 @@ export function ShiftDialog({ staffId, staffName, storeId, open: controlledOpen,
                 }
             })
 
-            await saveWeeklyShiftsAction(staffId, storeId, shiftsToSave)
+            const res = await saveWeeklyShiftsAction(staffId, storeId, shiftsToSave)
+            
+            if (res && res.success === false) {
+                 console.error('Save failed on server:', res.error)
+                 toast.error('詳細なエラー: ' + res.error)
+                 return
+            }
             
             toast.success('シフトを保存しました')
             setOpen(false)
             if (onSave) onSave()
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to save shifts:', error)
-            toast.error('シフトの保存に失敗しました')
+            toast.error('シフトの保存に失敗しました: ' + (error.message || ''))
         } finally {
             setLoading(false)
         }
