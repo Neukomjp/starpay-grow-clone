@@ -118,12 +118,19 @@ export function WeeklyCalendar({ storeId, onSelect, className, durationMinutes, 
                             <div className="font-medium text-xs text-muted-foreground self-end pb-1 text-center">時間</div>
                             {days.map((day) => {
                                 const isToday = isSameDay(day, today)
+                                const dayOfWeek = day.getDay()
+                                const isSunday = dayOfWeek === 0
+                                const isSaturday = dayOfWeek === 6
+                                
+                                const dayTextColor = isSunday ? "text-red-500" : isSaturday ? "text-blue-500" : "text-stone-500"
+                                const dateTextColor = isSunday ? "text-red-600" : isSaturday ? "text-blue-600" : "text-stone-800"
+
                                 return (
-                                    <div key={day.toString()} className={cn("text-center flex flex-col items-center", isToday && "bg-stone-50 rounded-md")}>
-                                        <span className={cn("text-xs font-medium", isToday ? "text-red-500" : "text-stone-500")}>
+                                    <div key={day.toString()} className={cn("text-center flex flex-col items-center", isToday && "bg-stone-50 border border-stone-200 rounded-md py-1 -my-1")}>
+                                        <span className={cn("text-xs font-medium", dayTextColor)}>
                                             {format(day, 'E', { locale: ja })}
                                         </span>
-                                        <span className={cn("text-lg font-bold", isToday ? "text-red-600" : "text-stone-800")}>
+                                        <span className={cn("text-lg font-bold", dateTextColor)}>
                                             {format(day, 'd')}
                                         </span>
                                     </div>
