@@ -186,13 +186,13 @@ export const bookingService = {
                 staffIds = [staffId]
             } else {
                 const { data: staff, error: staffError } = await supabase
-                    .from('staff')
-                    .select('id')
+                    .from('store_staff')
+                    .select('staff_id')
                     .eq('store_id', storeId)
 
                 if (staffError) throw staffError
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                staffIds = staff?.map((s: any) => s.id) || []
+                staffIds = staff?.map((s: any) => s.staff_id) || []
             }
 
             if (staffIds.length === 0) return []
