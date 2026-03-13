@@ -28,22 +28,11 @@ export const shiftService = {
     },
 
     async getShiftsByStoreId(storeId: string) {
-        // Without staff-store mapping in staff_shifts table, we need to join with staff table
         const supabase = await createClient()
-        const { data: staff, error: staffError } = await supabase
-            .from('staff')
-            .select('id')
-            .eq('store_id', storeId)
-
-        if (staffError) throw staffError
-
-        const staffIds = staff.map(s => s.id)
-        if (staffIds.length === 0) return []
-
         const { data, error } = await supabase
             .from('staff_shifts')
             .select('*')
-            .in('staff_id', staffIds)
+            .eq('store_id', storeId)
             .order('day_of_week', { ascending: true })
 
         if (error) throw new Error(error.message)
@@ -92,20 +81,10 @@ export const shiftService = {
 
     async getShiftExceptionsByStoreId(storeId: string, startDate?: string, endDate?: string) {
         const supabase = await createClient()
-        const { data: staff, error: staffError } = await supabase
-            .from('staff')
-            .select('id')
-            .eq('store_id', storeId)
-
-        if (staffError) throw staffError
-
-        const staffIds = staff.map(s => s.id)
-        if (staffIds.length === 0) return []
-
         let query = supabase
             .from('staff_shift_exceptions')
             .select('*')
-            .in('staff_id', staffIds)
+            .eq('store_id', storeId)
             .order('date', { ascending: true })
 
         if (startDate) {
